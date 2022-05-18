@@ -11,7 +11,6 @@ private:
 
 public:
     Palette(void* data);
-    ~Palette();
 
     void palette(const void*);
 };

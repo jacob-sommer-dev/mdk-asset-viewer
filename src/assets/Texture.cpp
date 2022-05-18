@@ -14,10 +14,10 @@ GLuint texLoad(const void* palette, const void* data, int start, unsigned short 
 	int dlen = len * mult;
 	int didx;
 	unsigned char data2[dlen]{0};
+
 	for(int i = 0; i < len; i++)
 	{
 		// OpenGL expects top left to be 0,0, so flip it while doing the conversion
-		// TODO: look into library mechanism for this
 		imod = i % w;
 		idiv = i / w;
 
@@ -48,22 +48,8 @@ GLuint texLoad(const void* palette, const void* data, int start, unsigned short 
 	GLuint texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	// if(alpha)
-	// {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
-	// }
-	// else
-	// {
-	// 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
-	// }
-	GLenum err = glGetError();
-	if (err != GL_NO_ERROR) 
-	{
-		SDL_Log("Creating texture failed, code %u\n", err);
-		glDeleteTextures(1, &texture);
-		texture = 0;
-		return 0;
-	}
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
 
 	// set filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

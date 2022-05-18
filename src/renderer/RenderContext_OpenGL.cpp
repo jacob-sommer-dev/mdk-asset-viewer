@@ -4,6 +4,20 @@
 
 MDK_Context* mdk_context = nullptr;
 
+void GLAPIENTRY
+MessageCallback( GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* userParam )
+{
+  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 RenderContext_OpenGL::RenderContext_OpenGL(u_int disp_width, u_int disp_height)
 {
     mdk_context = MDK_Context::get();
@@ -16,8 +30,8 @@ RenderContext_OpenGL::RenderContext_OpenGL(u_int disp_width, u_int disp_height)
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
 
     // create window
     // TODO: WxH should be an option
@@ -55,6 +69,9 @@ RenderContext_OpenGL::RenderContext_OpenGL(u_int disp_width, u_int disp_height)
         printf("Couldn't make window/context current. Error: %s\n", SDL_GetError());
 		//return EXIT_FAILURE;
 	}
+
+    glEnable              ( GL_DEBUG_OUTPUT );
+    glDebugMessageCallback( MessageCallback, 0 );
 
     // try to determine "best" vsync. TODO: This should be an option
 	if (SDL_GL_SetSwapInterval(-1) < 0) // try adaptive vsync
@@ -156,20 +173,4 @@ void RenderContext_OpenGL::render()
 
         // present
         SDL_GL_SwapWindow(window);
-}
-
-
-
-void GLAPIENTRY
-MessageCallback( GLenum source,
-                 GLenum type,
-                 GLuint id,
-                 GLenum severity,
-                 GLsizei length,
-                 const GLchar* message,
-                 const void* userParam )
-{
-  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, severity, message );
 }

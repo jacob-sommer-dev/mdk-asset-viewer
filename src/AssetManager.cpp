@@ -230,14 +230,14 @@ int AssetManager::clear()
     //     waiter++;
     // }
 
-    auto siter = shaders.begin();
-    while(siter != shaders.end())
-    {
-        //delete &(siter->first);
-        glDeleteProgram(siter->second);
-        siter++;
-    }
-    shaders.clear();
+    // auto siter = shaders.begin();
+    // while(siter != shaders.end())
+    // {
+    //     //delete &(siter->first);
+    //     glDeleteProgram(siter->second);
+    //     siter++;
+    // }
+    // shaders.clear();
 
     return 0;
 }

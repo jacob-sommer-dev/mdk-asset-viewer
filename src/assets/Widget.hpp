@@ -6,8 +6,7 @@
 class Widget : public Renderable
 {
     GLuint texture;
-    GLuint vbo;
-    GLuint ebo;
+    GLuint bufs[2]{0};
     GLuint vao;
     GLuint shaderProg;
 

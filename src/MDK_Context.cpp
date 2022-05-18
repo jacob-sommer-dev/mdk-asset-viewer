@@ -13,7 +13,7 @@ int MDK_Context::Init(float fov, u_int disp_w, u_int disp_h)
 
     camera = new Camera(fov, (float)disp_w / (float)disp_h);
 
-    renderer = getRenderContext(disp_w, disp_h, OpenGL33);
+    renderer = getRenderContext(disp_w, disp_h, OpenGL45);
 
     assets = new AssetManager(disp_w, disp_h);
 

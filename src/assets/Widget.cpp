@@ -26,12 +26,12 @@ Widget::Widget(GLuint texture, u_short w, u_short h, const u_int *disp_w, const 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glGenBuffers(2, bufs);
+
+    glBindBuffer(GL_ARRAY_BUFFER, bufs[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufs[1]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -45,7 +45,8 @@ Widget::Widget(GLuint texture, u_short w, u_short h, const u_int *disp_w, const 
 
 Widget::~Widget()
 {
-
+    glDeleteBuffers(2, bufs);
+    glDeleteVertexArrays(1, &vao);
 }
 
 void Widget::draw(glm::mat4 *projMat, glm::mat4 *viewMat)

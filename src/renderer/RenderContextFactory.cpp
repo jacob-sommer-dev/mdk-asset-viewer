@@ -4,7 +4,7 @@ RenderContext* getRenderContext(u_int disp_w, u_int disp_h, RENDERERS  renderTyp
 {
     switch (renderType)
     {
-        case OpenGL33:
+        case OpenGL45:
         default:
             return new RenderContext_OpenGL(disp_w, disp_h);
     }

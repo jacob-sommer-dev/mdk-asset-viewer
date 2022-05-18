@@ -5,7 +5,7 @@
 #include "RenderContext_OpenGL.hpp"
 
 typedef enum {
-    OpenGL33
+    OpenGL45
 } RENDERERS;
 
 RenderContext* getRenderContext(u_int, u_int, RENDERERS);
