@@ -73,11 +73,10 @@ void Camera::rotate(float radians, float x, float y, float z)
 	dirty = true;
 }
 
-void Camera::handleKeys(const Uint8 *keystates, const Uint32 *ticks)
+void Camera::handleKeys(const Uint8 *keystates, const float* dt)
 {
 
-    float scale = *ticks / 16.666;
-    float move = mov * scale;
+    float scale = *dt / 0.016666f;
     float ro = rot * scale;
 
     if(keystates[SDL_SCANCODE_W])

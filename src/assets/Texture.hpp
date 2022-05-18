@@ -1,8 +1,8 @@
 #ifndef __TEXTURE_H__
 #define __TEXTURE_H__
 
+#include <GL/glew.h>
 #include <SDL2/SDL.h>
-#include <GL/gl.h>
 
 /**
 * Load a 2D texture from a palette and data buffer
@@ -13,7 +13,7 @@
 * @param h height
 * @return GLuint the texture's name or 0 if failed
 */
-GLuint texLoad(const void* palette, const void* data, unsigned short w, unsigned short h, bool alpha);
+GLuint texLoad(const void* palette, const void* data, int start, unsigned short w, unsigned short h);
 
 /**
 * Deallocate a texture

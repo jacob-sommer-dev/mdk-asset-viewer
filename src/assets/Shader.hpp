@@ -5,7 +5,10 @@
 #define GL_GLEXT_PROTOTYPES // enable EXT prototype functions in gl2.h
 #endif
 
-#include <GL/gl.h>
+#include <cstdio>
+#include <cstdlib>
+#include <GL/glew.h>
+#include <SDL2/SDL.h>
 
 /** Loads a vertex and fragment shader from disk, then compiles and links them
  * into a shader program.

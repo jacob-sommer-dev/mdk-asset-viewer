@@ -6,21 +6,23 @@ MDK_Context::~MDK_Context() {}
 
 int MDK_Context::Init(float fov, u_int disp_w, u_int disp_h)
 {
-    //this->fov = fov;
+
+    this->fov = fov;
     this->disp_w = disp_w;
     this->disp_h = disp_h;
 
-    assets = new AssetManager(disp_w, disp_h);
-
     camera = new Camera(fov, (float)disp_w / (float)disp_h);
-    viewMat = *(camera->update());
-    projMat = glm::perspective(glm::radians(fov), (float)disp_w / (float)disp_h, 1.0f, 1000.0f);
+
+    renderer = getRenderContext(disp_w, disp_h, OpenGL33);
+
+    assets = new AssetManager(disp_w, disp_h);
 
     return 0;
 }
 
 int MDK_Context::Deinit()
 {
+    delete renderer;
     camera->~Camera();
     assets->clear();
     assets->~AssetManager();
@@ -50,58 +52,108 @@ int MDK_Context::setvFoV(float fov)
     return 0;
 }
 
+void MDK_Context::handleSDLKeyEvent(SDL_Event *eventp)
+{
+    SDL_Event event = *eventp;
+    switch ((event).type)
+    {
+        case SDL_KEYUP:
+            if (event.key.keysym.sym == SDLK_3)
+            {
+                std::string str2 = std::string("LOAD_3");
+                Widget* widget = assets->findWidget(&str2);
+                if(widget != nullptr)
+                    addToRenderList(widget);
+            }
+            else if (event.key.keysym.sym == SDLK_4)
+            {
+                std::string str2 = std::string("LOAD_4");
+                Widget* widget = assets->findWidget(&str2);
+                if(widget != nullptr)
+                    addToRenderList(widget);
+            }
+            else if (event.key.keysym.sym == SDLK_5)
+            {
+                std::string str2 = std::string("LOAD_5");
+                Widget* widget = assets->findWidget(&str2);
+                if(widget != nullptr)
+                    addToRenderList(widget);
+            }
+            else if (event.key.keysym.sym == SDLK_6)
+            {
+                std::string str2 = std::string("LOAD_6");
+                Widget* widget = assets->findWidget(&str2);
+                if(widget != nullptr)
+                    addToRenderList(widget);
+            }
+            else if (event.key.keysym.sym == SDLK_7)
+            {
+                std::string str2 = std::string("LOAD_7");
+                Widget* widget = assets->findWidget(&str2);
+                if(widget != nullptr)
+                    addToRenderList(widget);
+            }
+            else if (event.key.keysym.sym == SDLK_8)
+            {
+                std::string str2 = std::string("LOAD_8");
+                Widget* widget = assets->findWidget(&str2);
+                if(widget != nullptr)
+                    addToRenderList(widget);
+            }
+    }
+}
+
+void MDK_Context::handleSDLMouseEvent(SDL_Event *event)
+{
+
+}
+
 void MDK_Context::handleSDLEvent(SDL_Event *event)
 {
 
 }
 
-void MDK_Context::handleKeyStates(const Uint8 *keystates, const Uint32 *ticks)
+void MDK_Context::handleKeyStates(const Uint8 *keystates, const float* frameT)
 {
-    camera->handleKeys(keystates, ticks);
+    camera->handleKeys(keystates, frameT);
     /*projMat = */camera->update();
+}
+
+void MDK_Context::doPhysics(float* acc)
+{
+    // full physics steps
+    while (*acc >= physT)
+    {
+        // TODO update simulation by a full step
+        *acc -= physT;
+    }
+    // interpolated state to actually render
+    const float alpha = *acc / physT;
+    // TODO interpolate current state + alpha
+
 }
 
 bool MDK_Context::addToRenderList(Renderable* renderable)
 {
-    // don't add duplicate
-    auto it = renderList.begin();
-    while(it != renderList.end())
-    {
-        if (renderable == *it)
-        {
-            return false;
-        }
-        it++;
-    }
-    renderList.push_back(renderable);
-    return true;
+    return renderer->addToRenderList(renderable);
 }
 
 void MDK_Context::removeFromRenderList(Renderable* renderable)
 {
-    auto it = renderList.begin();
-    while(it != renderList.end())
-    {
-        if (renderable == *it)
-        {
-            renderList.erase(it);
-            break;
-        }
-        it++;
-    }
+    renderer->removeFromRenderList(renderable);
 }
 
 void MDK_Context::clearRenderList()
 {
-    renderList.clear();
+    renderer->clearRenderList();
 }
 
 void MDK_Context::render()
 {
-    auto it = renderList.begin();
-    while(it != renderList.end())
-    {
-        (*it)->draw(&projMat, &viewMat);
-        it++;
-    }
+    renderer->render();
+}
+
+glm::vec3* MDK_Context::getCameraPos()
+{
+    return camera->getPosition();
 }

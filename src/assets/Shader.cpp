@@ -1,10 +1,5 @@
 #include "Shader.hpp"
 
-#include <cstdio>
-#include <cstdlib>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
-
 #ifdef _MSC_VER
 #pragma warning(disable:4996) // allow fopen() portable function without warnings
 #endif // _MSC_VER

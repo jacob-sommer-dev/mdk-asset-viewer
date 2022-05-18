@@ -18,16 +18,16 @@ typedef struct _mti_hdr {
 } MTI_HDR;
 
 typedef struct _mti_record {
-    char title[9];              // title of record
+    char title[9];               // title of record
     unsigned short metaa;        // unknown metadata
     unsigned short metab;        // unknown metadata
     unsigned short metac;        // unknown metadata
     unsigned short metad;        // unknown metadata
     unsigned short metae;        // unknown metadata
     unsigned short metaf;        // unknown metadata
-    unsigned int offset;        // offset from file start - 4 file length bytes
-    unsigned int len;           // length of the data
-    int *data;                  // the data
+    unsigned int offset;         // offset from file start - 4 file length bytes
+    unsigned int len;            // length of the data
+    void *data;         // the data
 } MTI_RECORD;
 
 typedef struct _mti {
@@ -35,7 +35,7 @@ typedef struct _mti {
     MTI_RECORD *records;
 } MTI;
 
-int parsemti(char *, MTI *);
+int parsemti(const char *, MTI *);
 int writemtifiles(MTI *, char *);
 void freemti(MTI *);
 

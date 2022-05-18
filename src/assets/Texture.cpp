@@ -1,39 +1,46 @@
 #include "Texture.hpp"
 
-GLuint texLoad(const void* palette, const void* data, unsigned short w, unsigned short h, bool alpha) 
+GLuint texLoad(const void* palette, const void* data, int start, unsigned short w, unsigned short h)
 {
 
 	// turn palette and alpha data into RGB(A) here
 
-	int idx;
+	int idx = start;
 	int imod = 0;
 	int idiv = 0;
 
-	int mult = (alpha) ? 4 : 3;
+	int mult = 4;
 	int len = w * h;
 	int dlen = len * mult;
 	int didx;
 	unsigned char data2[dlen]{0};
 	for(int i = 0; i < len; i++)
 	{
-		// image data seems to be upside-down, so flip it while doing the conversion
+		// OpenGL expects top left to be 0,0, so flip it while doing the conversion
+		// TODO: look into library mechanism for this
 		imod = i % w;
 		idiv = i / w;
 
 		idx = len - w - (w * idiv) + imod;
 
 		unsigned char pd = *((unsigned char*)data + sizeof(char) * idx);
-		unsigned char *pp = (unsigned char*)palette + sizeof(char) * pd*mult;
+		unsigned char *pp = (unsigned char*)palette + sizeof(char) * pd*3;
 
 		didx = i * mult;
 
 		data2[didx] = *pp; // + sizeof(char) * 0;
 		data2[didx + 1] = *(pp + sizeof(char));// * 1;
 		data2[didx + 2] = *(pp + sizeof(char) * 2);
-		if(alpha)
+		if(pd < 16)
 		{
-			data2[didx + 3] = *(pp + sizeof(char) * 3);
+			//data2[didx + 3] = *(pp + sizeof(char) * 3);
+			data2[didx + 3] = (u_char)55;
 		}
+		else
+		{
+			data2[didx + 3] = ((unsigned char)255);
+		}
+
 		
 	}
 
@@ -41,14 +48,14 @@ GLuint texLoad(const void* palette, const void* data, unsigned short w, unsigned
 	GLuint texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	if(alpha)
-	{
+	// if(alpha)
+	// {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
-	}
-	else
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
-	}
+	// }
+	// else
+	// {
+	// 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data2);
+	// }
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) 
 	{

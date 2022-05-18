@@ -3,31 +3,38 @@
 
 #include <vector>
 
+#include "renderer/RenderContext.hpp"
+#include "renderer/RenderContextFactory.h"
+
 #include "AssetManager.hpp"
-#include "Camera.hpp"
 
 class MDK_Context
 {
 
 private:
 
-    float fov;
     u_int disp_w;
     u_int disp_h;
 
-    std::vector<Renderable*> renderList;
-    
-    Camera *camera;
-    glm::mat4 projMat;
-    glm::mat4 viewMat;
-
-
-public:
-
-    AssetManager *assets;
+    RenderContext* renderer;
 
     MDK_Context();
     ~MDK_Context();
+
+public:
+
+    float fov;
+    Camera* camera;
+
+    static constexpr float physT = (1.0f/60.0f); // physics timestep in s
+
+    static constexpr char* files[] = { "MISC/LOAD_3.LBB",
+                            "MISC/LOAD_4.LBB",
+                            "MISC/LOAD_5.LBB",
+                            "MISC/LOAD_6.LBB",
+                            "MISC/LOAD_7.LBB",
+                            "MISC/LOAD_8.LBB"
+                          };
 
     static MDK_Context* get()
     {
@@ -40,6 +47,8 @@ public:
         return singleton;
     }
 
+    AssetManager *assets;
+
     int Init(float fov, u_int disp_w, u_int disp_h);
     int Deinit();
 
@@ -47,14 +56,20 @@ public:
     void getDisplayDimens(u_int *disp_w, u_int *disp_h);
     int setvFoV(float fov);
 
+    void handleSDLKeyEvent(SDL_Event *event);
+    void handleSDLMouseEvent(SDL_Event *event);
     void handleSDLEvent(SDL_Event *event);
-    void handleKeyStates(const Uint8 *keystates, const Uint32 *ticks);
+    void handleKeyStates(const Uint8 *keystates, const float* frameT);
+
+    void doPhysics(float *);
 
     bool addToRenderList(Renderable *);
     void removeFromRenderList(Renderable *);
     void clearRenderList();
 
     void render();
+
+    glm::vec3* getCameraPos();
 
 };
 

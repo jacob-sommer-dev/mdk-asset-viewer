@@ -52,7 +52,7 @@ public:
 	void translate(float x, float y, float z);
 	void setRotation(float radians, float x, float y, float z);
 	void rotate(float radians, float x, float y, float z);
-    void handleKeys(const Uint8 *keystates, const Uint32 *ticks);
+    void handleKeys(const Uint8 *keystates, const float* dt);
 	
 };
 

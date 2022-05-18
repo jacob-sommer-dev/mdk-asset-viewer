@@ -3,7 +3,7 @@
 GLuint loadlbb(const std::string *filepath, u_short *w, u_short *h)
 {
 
-    SDL_RWops *srw = SDL_RWFromFile((*filepath).c_str(), "r");
+    SDL_RWops *srw = SDL_RWFromFile((*filepath).c_str(), "rb");
     if (srw != NULL)
     {
         char palette[768];
@@ -40,7 +40,7 @@ GLuint loadlbb(const std::string *filepath, u_short *w, u_short *h)
 
         srw->close(srw);
 
-        return texLoad(palette, tex, *w, *h, false);
+        return texLoad(palette, tex, 0, *w, *h);
     }
 
     return 0;

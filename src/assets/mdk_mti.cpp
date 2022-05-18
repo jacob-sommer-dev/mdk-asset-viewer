@@ -1,6 +1,6 @@
 #include "mdk_mti.h"
 
-int parsemti(char *filename, MTI *mti)
+int parsemti(const char *filename, MTI *mti)
 {
     FILE *mtifile;
 
@@ -119,7 +119,7 @@ int parsemti(char *filename, MTI *mti)
             }
         }
 
-        // calculate lengths because it's FFFF sometimes
+        // calculate lengths
         for(int i = 0; i < mti->header->num_entries; i++) 
         {
             MTI_RECORD *record = ((*mti).records) + i;
@@ -187,7 +187,7 @@ int parsemti(char *filename, MTI *mti)
             }
 
             // allocate memory for data
-            record->data = (int*)malloc(len);
+            record->data = malloc(len);
             read = fread(record->data, 1, len, mtifile);
             if(read != len)
             {
