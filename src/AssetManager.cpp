@@ -87,11 +87,18 @@ int AssetManager::loadFromFile(const std::string *path)
         if (strcmp(name, "FALL3D") == 0)
         {
             // 28-32 are palettes, load first
-            palettes.emplace(std::string(bni->records[28].title), new Palette(bni->records[28].data));
-            palettes.emplace(std::string(bni->records[29].title), new Palette(bni->records[29].data));
-            palettes.emplace(std::string(bni->records[30].title), new Palette(bni->records[30].data));
-            palettes.emplace(std::string(bni->records[31].title), new Palette(bni->records[31].data));
-            palettes.emplace(std::string(bni->records[32].title), new Palette(bni->records[32].data));
+            std::string t = std::string(bni->records[28].title);
+            u_int l = bni->records[28].len;
+            void* d = bni->records[28].data;
+
+            Palette* p = new Palette();
+            p->setData(bni->records[28].data, bni->records[28].len);
+
+            palettes.emplace(std::string(bni->records[28].title), p);
+            // palettes.emplace(std::string(bni->records[29].title), new Palette(bni->records[29].data));
+            // palettes.emplace(std::string(bni->records[30].title), new Palette(bni->records[30].data));
+            // palettes.emplace(std::string(bni->records[31].title), new Palette(bni->records[31].data));
+            // palettes.emplace(std::string(bni->records[32].title), new Palette(bni->records[32].data));
 
             // would be set by specific level load. TODO: Have way to set palette
             auto it = palettes.find(std::string(bni->records[28].title));
@@ -128,11 +135,11 @@ int AssetManager::loadFromFile(const std::string *path)
                     else 
                     {
                         // regular texture
-                        u_short w = *(((u_short*)record.data));
-                        u_short h = *(((u_short*)record.data) + sizeof(u_short));
+                        u_short w = *((u_short*)record.data);
+                        u_short h = *((u_short*)(record.data) + 1);
                         const void* p;
                         currentPalette->palette(p);
-                        GLuint texture = texLoad(p, record.data, sizeof(u_short)*2, w, h);
+                        GLuint texture = texLoad2(p, record.data, sizeof(u_short)*2, w, h);
 
                         if(texture != 0)
                         {
@@ -174,10 +181,7 @@ int AssetManager::loadFromFile(const std::string *path)
 
 int AssetManager::clear()
 {
-    if (currentPalette != nullptr)
-    {
-        delete currentPalette;
-    }
+    currentPalette = nullptr;
 
     auto piter = palettes.begin();
     while(piter != palettes.end())
@@ -287,4 +291,13 @@ Widget* AssetManager::findWidget(std::string* key)
 {
     auto it = widgets.find(*key);
     return (it != widgets.end()) ? it->second : nullptr;
+}
+
+void AssetManager::availWidgets(std::vector<std::string>& list)
+{
+    list.clear();
+    for(std::pair<const std::string, Widget*> pair : widgets)
+    {
+        list.push_back(pair.first);
+    }
 }

@@ -54,53 +54,53 @@ int MDK_Context::setvFoV(float fov)
 
 void MDK_Context::handleSDLKeyEvent(SDL_Event *eventp)
 {
-    SDL_Event event = *eventp;
-    switch ((event).type)
-    {
-        case SDL_KEYUP:
-            if (event.key.keysym.sym == SDLK_3)
-            {
-                std::string str2 = std::string("LOAD_3");
-                Widget* widget = assets->findWidget(&str2);
-                if(widget != nullptr)
-                    addToRenderList(widget);
-            }
-            else if (event.key.keysym.sym == SDLK_4)
-            {
-                std::string str2 = std::string("LOAD_4");
-                Widget* widget = assets->findWidget(&str2);
-                if(widget != nullptr)
-                    addToRenderList(widget);
-            }
-            else if (event.key.keysym.sym == SDLK_5)
-            {
-                std::string str2 = std::string("LOAD_5");
-                Widget* widget = assets->findWidget(&str2);
-                if(widget != nullptr)
-                    addToRenderList(widget);
-            }
-            else if (event.key.keysym.sym == SDLK_6)
-            {
-                std::string str2 = std::string("LOAD_6");
-                Widget* widget = assets->findWidget(&str2);
-                if(widget != nullptr)
-                    addToRenderList(widget);
-            }
-            else if (event.key.keysym.sym == SDLK_7)
-            {
-                std::string str2 = std::string("LOAD_7");
-                Widget* widget = assets->findWidget(&str2);
-                if(widget != nullptr)
-                    addToRenderList(widget);
-            }
-            else if (event.key.keysym.sym == SDLK_8)
-            {
-                std::string str2 = std::string("LOAD_8");
-                Widget* widget = assets->findWidget(&str2);
-                if(widget != nullptr)
-                    addToRenderList(widget);
-            }
-    }
+    // SDL_Event event = *eventp;
+    // switch ((event).type)
+    // {
+    //     case SDL_KEYUP:
+    //         if (event.key.keysym.sym == SDLK_3)
+    //         {
+    //             std::string str2 = std::string("LOAD_3");
+    //             Widget* widget = assets->findWidget(&str2);
+    //             if(widget != nullptr)
+    //                 addToRenderList(widget);
+    //         }
+    //         else if (event.key.keysym.sym == SDLK_4)
+    //         {
+    //             std::string str2 = std::string("LOAD_4");
+    //             Widget* widget = assets->findWidget(&str2);
+    //             if(widget != nullptr)
+    //                 addToRenderList(widget);
+    //         }
+    //         else if (event.key.keysym.sym == SDLK_5)
+    //         {
+    //             std::string str2 = std::string("LOAD_5");
+    //             Widget* widget = assets->findWidget(&str2);
+    //             if(widget != nullptr)
+    //                 addToRenderList(widget);
+    //         }
+    //         else if (event.key.keysym.sym == SDLK_6)
+    //         {
+    //             std::string str2 = std::string("LOAD_6");
+    //             Widget* widget = assets->findWidget(&str2);
+    //             if(widget != nullptr)
+    //                 addToRenderList(widget);
+    //         }
+    //         else if (event.key.keysym.sym == SDLK_7)
+    //         {
+    //             std::string str2 = std::string("LOAD_7");
+    //             Widget* widget = assets->findWidget(&str2);
+    //             if(widget != nullptr)
+    //                 addToRenderList(widget);
+    //         }
+    //         else if (event.key.keysym.sym == SDLK_8)
+    //         {
+    //             std::string str2 = std::string("LOAD_8");
+    //             Widget* widget = assets->findWidget(&str2);
+    //             if(widget != nullptr)
+    //                 addToRenderList(widget);
+    //         }
+    // }
 }
 
 void MDK_Context::handleSDLMouseEvent(SDL_Event *event)

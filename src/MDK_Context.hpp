@@ -28,14 +28,6 @@ public:
 
     static constexpr float physT = (1.0f/60.0f); // physics timestep in s
 
-    static constexpr char* files[] = { "MISC/LOAD_3.LBB",
-                            "MISC/LOAD_4.LBB",
-                            "MISC/LOAD_5.LBB",
-                            "MISC/LOAD_6.LBB",
-                            "MISC/LOAD_7.LBB",
-                            "MISC/LOAD_8.LBB"
-                          };
-
     static MDK_Context* get()
     {
         static MDK_Context* singleton = nullptr;

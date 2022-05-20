@@ -1,6 +1,7 @@
 #include "RenderContext_OpenGL.hpp"
 
 #include "../MDK_Context.hpp"
+#include "../FileSet.h"
 
 MDK_Context* mdk_context = nullptr;
 
@@ -139,9 +140,9 @@ void RenderContext_OpenGL::render()
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::ShowDemoWindow();
+        //ImGui::ShowDemoWindow();
 
-        ImGui::Begin("Hello, World!");
+        ImGui::Begin("Asset Selector");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         // ImGui::Text("Elapsed frametime ms: %.3f", elapsedT);
         // ImGui::Text("Elapsed acc after phys ms: %.3f", acc);
@@ -151,19 +152,84 @@ void RenderContext_OpenGL::render()
 
         static int file_prev = -1;
         static int file_current = -1;
-        ImGui::Combo("Files", &file_current, MDK_Context::files, IM_ARRAYSIZE(MDK_Context::files));
+        bool fileChanged = false;
+        ImGui::Combo("Files", &file_current, FILESETS, IM_ARRAYSIZE(FILESETS));
         if(file_prev != file_current)
         {
             file_prev = file_current;
+            fileChanged = true;
 
             // clear render list
-            mdk_context->clearRenderList();
+            clearRenderList();
             // clear the loaded assets
             mdk_context->assets->clear();
 
-            // load the file
-            const std::string str = std::string(MDK_Context::files[file_current]);
-            mdk_context->assets->loadFromFile(&str);
+            FileSet fileset;
+            findFileSet(FILESETS[file_current], fileset);    
+
+            // load the fileset
+            for(int i = 0; i < fileset.size; i++)
+            {
+                const std::string str = std::string(fileset.fileset[i]);
+                mdk_context->assets->loadFromFile(&str);
+            }
+
+            
+        }
+
+        // radio buttons for asset type
+        static int r_prev = -1;
+        static int r_current = -1;
+        ImGui::RadioButton("Textures", &r_current, 0); //ImGui::SameLine();
+
+        // asset list
+        static std::vector<std::string> assets;
+        static const char* items[100];
+
+        if(r_prev != r_current || fileChanged)
+        {
+            r_prev = r_current;
+
+            switch (r_current)
+            {
+                case 0:
+                    mdk_context->assets->availWidgets(assets);
+            }
+
+            
+            for(int i = 0; i < assets.size(); i++)
+            {
+                items[i] = assets[i].c_str();
+            }
+
+        }
+
+        static int selected_prev = -1;
+        static int selected_current = -1;
+
+        if(fileChanged)
+        {
+            selected_prev = -1;
+            selected_current = -1;
+        }
+
+        ImGui::Combo("Assets", &selected_current, items, assets.size());
+
+        if(selected_prev != selected_current)
+        {
+            selected_prev = selected_current;
+
+            // clear render list
+            clearRenderList();
+            
+            switch (r_current)
+            {
+                case 0:
+                    std::string sel = std::string(items[selected_current]);
+                    Widget* wid = mdk_context->assets->findWidget(&sel);
+                    addToRenderList(wid);
+            }
+
         }
 
         ImGui::End();

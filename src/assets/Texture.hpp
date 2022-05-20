@@ -15,6 +15,8 @@
 */
 GLuint texLoad(const void* palette, const void* data, int start, unsigned short w, unsigned short h);
 
+GLuint texLoad2(const void* palette, const void* data, int start, unsigned short w, unsigned short h);
+
 /**
 * Deallocate a texture
 * @param texName the name of the texture to deallocate

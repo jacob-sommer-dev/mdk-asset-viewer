@@ -1,11 +1,16 @@
 #include "Palette.hpp"
 
-Palette::Palette(void* data)
+Palette::Palette()
 {
-    memcpy(this->data, data, 768); // palettes are 768 bytes
+    
 }
 
-void Palette::palette(const void* palette)
+void Palette::setData(void* data, unsigned int len)
+{
+    memcpy(this->data, data, len); // palettes are 768 bytes
+}
+
+void Palette::palette(const void*& palette)
 {
     palette = this->data;
 }

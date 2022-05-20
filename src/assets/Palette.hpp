@@ -7,12 +7,14 @@ class Palette
 {
 
 private:
-    void* data;
+    unsigned char data[768];
 
 public:
-    Palette(void* data);
+    Palette();
 
-    void palette(const void*);
+    void setData(void*, unsigned int);
+
+    void palette(const void*&);
 };
 
 #endif // __PALETTE_H__

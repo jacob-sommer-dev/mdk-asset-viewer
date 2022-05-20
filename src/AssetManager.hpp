@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 #include <GL/glew.h>
 
@@ -55,6 +56,8 @@ public:
 
     Widget* findWidget(std::string *);
     Model* findModel(std::string *);
+
+    void availWidgets(std::vector<std::string>&);
 
 };
 

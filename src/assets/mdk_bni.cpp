@@ -67,7 +67,7 @@ int parsebni(const char *filename, BNI* bni)
             BNI_RECORD *record = (bni->records) + i;
 
             unsigned int start = record->offset;
-            unsigned int end;
+            unsigned int end = 0;
 
             // read to the next offset, or EOF if last record
             if(i == bni->header->num_entries - 1)
@@ -77,9 +77,8 @@ int parsebni(const char *filename, BNI* bni)
             else 
             {
                 // next record
-                BNI_RECORD *nrecord = (bni->records) + (i + 1);
-                unsigned int o = nrecord->offset;
-                end = o;
+                BNI_RECORD *nrecord = (bni->records) + i + 1;
+                end = nrecord->offset;
             }
 
             // calculate and set data length
@@ -91,7 +90,7 @@ int parsebni(const char *filename, BNI* bni)
         {
             BNI_RECORD *record = ((*bni).records) + i;
 
-            unsigned int start = record->offset;
+            unsigned int start = record->offset + 4;
             unsigned int len = record->len;
 
             // seek to the start of the data
