@@ -11,6 +11,7 @@ int MDK_Context::Init(float fov, u_int disp_w, u_int disp_h)
     this->disp_w = disp_w;
     this->disp_h = disp_h;
 
+    // TODO move this into render context
     camera = new Camera(fov, (float)disp_w / (float)disp_h);
 
     renderer = getRenderContext(disp_w, disp_h, OpenGL45);
@@ -116,7 +117,6 @@ void MDK_Context::handleSDLEvent(SDL_Event *event)
 void MDK_Context::handleKeyStates(const Uint8 *keystates, const float* frameT)
 {
     camera->handleKeys(keystates, frameT);
-    /*projMat = */camera->update();
 }
 
 void MDK_Context::doPhysics(float* acc)

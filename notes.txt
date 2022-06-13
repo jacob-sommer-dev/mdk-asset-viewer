@@ -1,0 +1,255 @@
+mdk_notes
+
+https://github.com/kovidomi/game-reversing
+https://www.retroreversing.com/ps1-debug-symbols
+https://github.com/stohrendorf/symdump/
+https://bleepsandpops.com/post/37792760450/adding-cue-points-to-wav-files-in-c
+https://en.wikipedia.org/wiki/Compact_Disc_Digital_Audio#Standard
+https://github.com/VSCodium/vscodium/issues/493
+
+-- TODO --
+- raw bin -> wav (add wav header). DONE
+- handle CD audio rip -> wav
+- extractor for level data
+
+LOAD_#.LBB = loading screen. Pallete, WxH, and img data
+
+PALLETES
+768 bytes, 256 RGB (111)
+still need to work out transparencies
+index 0 seems to be transparent in some cases, maybe first 15 are treated as transparencies?
+
+FALL3D - ship -> level, dodge etc
+TRAVERSE - proper arena levels
+STREAM - end of level tube
+
+e.g. traverse.sni - common sound files for arena levels
+
+(LOF = length of file)
+--- GAME DATA FILES ---
+-- game data file header -- 20 bytes
+
+(#bytes uint = data)
+
+4 = LOF - 4
+12 = file name (? - .SND vs .SNI etc)
+4 = offset of footer (read to here for all data)
+4 = # entries
+
+-- entry header -- 24 bytes
+12 = name
+4 = ???????
+4 = offset from start + 4 (it seems you always read the first 4 bytes first for LOF)
+4 = length in bytes
+
+---------------------
+
+---- mdkfont.fti - font data (txture), string data, SND_PUSH = moving around menu sound ----
+-- header -- 8 bytes
+4 = length readable (length - 4)
+4 = # of entries
+
+-- entry header -- 12 bytes - NOTE: use current and next record offsets to determine lengths of record data
+8 = title
+4 = offset from start - 4 (always read the first 4 for readable length)
+
+---------------------
+
+--- SNI - sound/music ---
+series of WAVE format data
+
+for traverse,
+*O.SNI -> audio + may have more than wavs
+*S.SNI -> audio
+
+4 = LOF - 4
+12 = file name
+4 = offset of footer (read to here for all data)
+4 = # entries
+
+-- entry header --
+12 = title
+4 = ?
+4 = offset from start + 4
+4 = length
+
+-- WAVE -- (#bytes uint = data)
+
+4 = 'RIFF'
+4 = length - 8 for chunk header (remaining header + actual data. If data is odd, this will be even with added 00 padding)
+4 = 'WAVE'
+4 = 'fmt '
+4 = fmt header size (up to 'data', not inclusive)
+2 = compression code
+2 = # of channels
+4 = sample rate
+4 = avg byte/sec
+2 = bytes per frame
+2 = bits per sample
+4 = 'data'
+4 = data size (actual, no added 00 if odd)
+N = data
+
+--- MUSIC -> TRACK MAP (can use this to swap in better PS version music later) ---
+OPTIONS.BNI::MAINSONG -> Track 18 14316412
+
+--- BNI - ? binary mix? ---
+
+---------------------------
+
+--- MTI - texture data? ---
+8 = title
+12 = ?
+
+sprite sheet = 01 00 01 00
+02 00 00 00 = ? (meat 5 snow)
+
+4 = offset if texture, 00 00 00 00 if solid color?brush?
+
+--
+
+-- Texture index data (sometimes at top of meat files)
+
+first 4 bytes, 2 shorts = w x h
+
+sprite sheet 8 bytes, 4 = int # of frames, then 2 WxH shorts
+then WxH * #frames
+
+--- MTO - materials(?) ---
+8 = title
+4 = offset  -  NOTE: offsets are from 0 (not + 4 like others)
+
+?????????????
+
+-- MEAT --
+4 = length of meat
+4 = offset - 4 -> offset data (bytes to read for offset, offset)
+4 = offset - 4 -> pallete data (336,
+4 = offset - 4 brush header?
+4 = offset of texture data end
+
+- AKS -
+12 = name
+4 = length of data (after reading these 4)
+4 = # of ? XMT = ? XG = ? XS = animations
+4 = # of ? XBN = ? XG = ? XED
+4 = # of SOUNDS (WAVEs)
+
+
+--header
+12 = name
+4 = ?
+4 = # of textures
+THEN
+-- texture header data
+8 = name
+2 = ?
+2 = ?
+6 = ?
+2 = 60 40 (mostly)
+4 = offset from header start
+
+Pallets
+768 bytes, RGB, 256 colors
+
+--------------------------
+
+CMEAT
+4 = # of textures
+n * 10 = texture names
+4 = # ?
+n * 44 = ?
+4 = # ?
+n * 36 = ?
+4 = # ?
+n * 12 = ?
+4 = # ?
+n = ?
+
+?????????????
+
+---
+
+Texture format (for the text anyway)
+1024 bytes - color data
+2 bytes # characters
+2 bytes byte length of each character
+
+--- BIN -----
+4 = file length
+4 = # records
+
+record header len = 16 bytes
+12 = name
+4 = offset from start - 4
+
+MODEL - seem to be disparate parts instead of a hierarchy
+4 = # of textures/brushes
+n * 16 = texture/brush names
+4 = # parts
+    12 = part name
+    12 = ? 3 floats, offset from origin/relative origin?
+    4 = # of vertices
+    n * 12 = vertices - x, y, z in index order
+    4 = # of triangle order / u, v coordinates
+    n * 36 = triangle order / u, v coordinates
+        2 = u16 vertex index 1
+        2 = u16 vertex index 2
+        2 = u16 vertex index 3
+        2 = u16 texture/brush index
+        8 = ? 2 floats u,v 1
+        8 = ? 2 floats u,v 2
+        8 = ? 2 floats u,v 3
+        4 = ? 0's, padding?
+    24 = subset of coordinate floats repeated, 6 floats x, x, y, y, z, z, bounding/hit box?
+    may be more than 24 (fall3d.bni's missile) but repeated
+
+quirks - BONES model has FF FF (FALL3D.BNI) or F0 FF (STREAM.BNI) as material reference... should be white, so static replacement? default base color?
+
+ANIMATIONS
+4 = 00 00 80 3F - ? float = 1.0
+4 = # animating parts?
+4 = ?
+4 = offset from after #parts to the part
+-- part
+12 = name
+4 = # of vertices, matches model part # verts
+4 = ?
+2 = ?
+n (verts) * 12 = vertex ?initial position?
+
+
+
+STREAMBNI
+SWH150/SWHANM = health guy model/anim
+PAL = ?
+BG = ?background?
+PLANET = planet texture
+KURT/KURTANIM BONES GUNTA = kurt/bones/gunta model/anim
+LIGHT - texture
+WIND - sound
+HITSIDE - sound
+RESCUE - sound
+HURT1-7 -sounds
+APPLE - sound
+
+
+FALL3D
+bang/zoom - animation and sprite sheet i think
+4 = length
+4 = # of ?
+n * 4 = ?
+
+SC_BSTAT = status UI texture ?
+SC_STAT = status UI texture
+
+SNIP_TXT = number texture
+
+FALLP# = color pallete for that drop
+
+FALLPU_# = pick ups available during that drop
+
+PICKUPS = ?
+4 = length
+4 = ? 9
+n * 4 = offsets after length

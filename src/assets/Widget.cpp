@@ -12,10 +12,10 @@ Widget::Widget(GLuint texture, u_short w, u_short h, const u_int *disp_w, const 
     // now set up verts, u,v
     float verts[] = 
     {
-         x,  y, 0.0f,   1.0f, 1.0f,
-         x, -y, 0.0f,   1.0f, 0.0f,
-        -x,  y, 0.0f,   0.0f, 1.0f,
-        -x, -y, 0.0f,   0.0f, 0.0f
+         x, -y, 0.0f,   1.0f, 1.0f,
+         x,  y, 0.0f,   1.0f, 0.0f,
+        -x, -y, 0.0f,   0.0f, 1.0f,
+        -x,  y, 0.0f,   0.0f, 0.0f
     };
     u_int indices[] =
     {
@@ -41,6 +41,8 @@ Widget::Widget(GLuint texture, u_short w, u_short h, const u_int *disp_w, const 
     glEnableVertexAttribArray(1);
 
     shaderProg = shader;
+    glUseProgram(shaderProg);
+    glUniform1i(glGetUniformLocation(shaderProg, "ourTexture"), 0);
 }
 
 Widget::~Widget()
@@ -59,6 +61,8 @@ void Widget::draw(glm::mat4 *projMat, glm::mat4 *viewMat)
         glUseProgram(shaderProg);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        glBindVertexArray(0);
     }
 }
 

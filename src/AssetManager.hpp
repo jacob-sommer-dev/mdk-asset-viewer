@@ -10,7 +10,9 @@
 #include "assets/Palette.hpp"
 #include "assets/Shader.hpp"
 #include "assets/Widget.hpp"
+#include "assets/Material.hpp"
 #include "assets/Texture.hpp"
+#include "assets/Brush.hpp"
 #include "assets/Mesh.hpp"
 #include "assets/Animation.hpp"
 #include "assets/Model.hpp"
@@ -29,11 +31,13 @@ private:
     Palette* currentPalette = nullptr;
     std::map<std::string, Palette *> palettes;
     std::map<std::string, Widget *> widgets;
-    std::map<std::string, GLuint> textures;
+    std::map<std::string, Texture *> textures;
+    std::map<std::string, Brush *> brushes;
     // std::map<std::string, Mesh *> meshes;
     // std::map<std::string, Animation *> animations;
     // std::map<std::string, int *> wavs;
     std::map<std::string, GLuint> shaders;
+    std::map<std::string, Model *> models;
 
     
 
@@ -48,9 +52,9 @@ public:
     int clear();
     void* getCurrPalette();
     void* findPalette(std::string *);
-    GLuint findTexture(std::string *);
-    Mesh* findMesh(std::string *);
-    Animation* findAnimation(std::string *);
+    Texture* findTexture(std::string *);
+    Brush* findBrush(std::string *);
+    Material* findMaterial(std::string *);
     int* findWav(std::string *);
     GLuint findShader(std::string *);
 
@@ -58,6 +62,9 @@ public:
     Model* findModel(std::string *);
 
     void availWidgets(std::vector<std::string>&);
+    void availModels(std::vector<std::string>&);
+
+    void finalizeAssets();
 
 };
 

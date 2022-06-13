@@ -43,9 +43,9 @@ int AssetManager::loadFromFile(const std::string *path)
         name = strndup(fn, name - fn);
 
         u_short w,h;
-        GLuint texture = loadlbb(path, &w, &h);
+        Texture* texture = loadlbb(path, &w, &h);
 
-        if(texture != 0)
+        if(texture != nullptr)
         {
             std::string fname = std::string("Widget.vert");
             std::string sname;
@@ -59,7 +59,7 @@ int AssetManager::loadFromFile(const std::string *path)
                 shaders.emplace(sname, shader);
             }
 
-            Widget *wid = new Widget(texture, w, h, &disp_w, &disp_h, shader);
+            Widget *wid = new Widget(texture->gltex, w, h, &disp_w, &disp_h, shader);
 
             std::string namestr = std::string(name);
 
@@ -104,6 +104,23 @@ int AssetManager::loadFromFile(const std::string *path)
             auto it = palettes.find(std::string(bni->records[28].title));
             currentPalette = it->second;
 
+            // load kurt model
+            t = std::string(bni->records[0].title);
+            l = bni->records[0].len;
+            d = bni->records[0].data;
+
+            std::string sname = std::string("Mesh");
+            GLuint shader = findShader(&sname);
+
+            if(shader == 0)
+            {
+                shader = loadShaderProgram("../src/shaders/Mesh.vert", "../src/shaders/Mesh.frag");
+                shaders.emplace(sname, shader);
+            }
+
+            Model* m = new Model(t, d);
+            models.emplace(t, m);
+
         }
     }
     else if (strcmp(ext, "MTI") == 0)
@@ -139,14 +156,11 @@ int AssetManager::loadFromFile(const std::string *path)
                         u_short h = *((u_short*)(record.data) + 1);
                         const void* p;
                         currentPalette->palette(p);
-                        GLuint texture = texLoad2(p, record.data, sizeof(u_short)*2, w, h);
+                        Texture* texture = new Texture(p, record.data, sizeof(u_short)*2, w, h, false, false);
 
-                        if(texture != 0)
+                        if(texture != nullptr)
                         {
-                            std::string fname = std::string("Widget.vert");
-                            std::string sname;
-                            nameFromFilename(&fname, sname);
-
+                            std::string sname = std::string("Widget");
                             GLuint shader = findShader(&sname);
 
                             if(shader == 0)
@@ -155,7 +169,7 @@ int AssetManager::loadFromFile(const std::string *path)
                                 shaders.emplace(sname, shader);
                             }
 
-                            Widget *wid = new Widget(texture, w, h, &disp_w, &disp_h, shader);
+                            Widget *wid = new Widget(texture->gltex, w, h, &disp_w, &disp_h, shader);
 
                             std::string namestr = std::string(record.title);
                             
@@ -205,7 +219,7 @@ int AssetManager::clear()
     while(titer != textures.end())
     {
         //delete &(titer->first);
-        glDeleteTextures(1, &(titer->second));
+        delete titer->second;
         titer++;
     }
     textures.clear();
@@ -257,23 +271,39 @@ void* AssetManager::findPalette(std::string* key)
     return (it != palettes.end()) ? it->second : nullptr;
 }
 
-GLuint AssetManager::findTexture(std::string* key)
+Texture* AssetManager::findTexture(std::string* key)
 {
     auto it = textures.find(*key);
-    return (it != textures.end()) ? it->second : 0;
+    return (it != textures.end()) ? it->second : nullptr;
 }
 
-// Mesh* AssetManager::findMesh(std::string* key)
-// {
-//     auto it = meshes.find(*key);
-//     return (it != meshes.end()) ? it->second : nullptr;
-// }
+Brush* AssetManager::findBrush(std::string* key)
+{
+    auto it = brushes.find(*key);
+    return (it != brushes.end()) ? it->second : nullptr;
+}
 
-// Animation* AssetManager::findAnimation(std::string* key)
-// {
-//     auto it = animations.find(*key);
-//     return (it != animations.end()) ? it->second : nullptr;
-// }
+Material* AssetManager::findMaterial(std::string* key)
+{
+    auto itt = textures.find(*key);
+    if (itt != textures.end())
+    {
+        return itt->second;
+    }
+    else 
+    {
+        auto itb = brushes.find(*key);
+        if(itb != brushes.end())
+        {
+            return itb->second;
+        }
+        else
+        {
+            // any checking for specific brushes, maybe add them in constructor so we don't have to do this?
+            return nullptr;
+        }
+    }
+}
 
 // int* AssetManager::findWav(std::string* key)
 // {
@@ -293,11 +323,34 @@ Widget* AssetManager::findWidget(std::string* key)
     return (it != widgets.end()) ? it->second : nullptr;
 }
 
+Model* AssetManager::findModel(std::string* key)
+{
+    auto it = models.find(*key);
+    return (it != models.end()) ? it->second : nullptr;
+}
+
 void AssetManager::availWidgets(std::vector<std::string>& list)
 {
     list.clear();
     for(std::pair<const std::string, Widget*> pair : widgets)
     {
         list.push_back(pair.first);
+    }
+}
+
+void AssetManager::availModels(std::vector<std::string>& list)
+{
+    list.clear();
+    for(std::pair<const std::string, Model*> pair : models)
+    {
+        list.push_back(pair.first);
+    }
+}
+
+void AssetManager::finalizeAssets()
+{
+    for(std::pair<const std::string, Model*> pair : models)
+    {
+        pair.second->load();
     }
 }

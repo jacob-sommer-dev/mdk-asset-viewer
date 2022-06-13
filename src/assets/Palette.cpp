@@ -14,3 +14,12 @@ void Palette::palette(const void*& palette)
 {
     palette = this->data;
 }
+
+void Palette::colorAt(unsigned char idx, unsigned char* r, unsigned char* g, unsigned char* b)
+{
+    unsigned char *pp = (unsigned char*)data + sizeof(char) * idx*3;
+
+    *r = *pp; // + sizeof(char) * 0;
+	*g = *(pp + sizeof(char));// * 1;
+	*b = *(pp + sizeof(char) * 2);
+}

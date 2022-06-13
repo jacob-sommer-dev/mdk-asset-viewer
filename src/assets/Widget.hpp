@@ -14,11 +14,11 @@ private:
 
 
 public:
-    Widget(GLuint, u_short, u_short, const u_int *, const u_int *, GLuint shader);
+    Widget(GLuint, u_short, u_short, const u_int *, const u_int *, GLuint);
     ~Widget();
 
     // Renderable
-    void draw(glm::mat4 *projMat, glm::mat4 *viewMat);
+    void draw(glm::mat4 *projMat, glm::mat4 *viewMat) override;
 
 
 };

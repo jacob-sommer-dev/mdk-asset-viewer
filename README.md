@@ -19,3 +19,4 @@ Currently Linux-only, Windows compatibility is planned.
 
 ### Current State
 ![Current State](current_state.png)
+![Model In-Progress](state_model.png)

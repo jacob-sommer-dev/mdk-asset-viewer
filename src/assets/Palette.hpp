@@ -15,6 +15,7 @@ public:
     void setData(void*, unsigned int);
 
     void palette(const void*&);
+    void colorAt(unsigned char, unsigned char*, unsigned char*, unsigned char*);
 };
 
 #endif // __PALETTE_H__

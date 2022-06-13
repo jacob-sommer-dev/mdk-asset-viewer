@@ -127,6 +127,8 @@ void RenderContext_OpenGL::render()
         // clear buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        viewMat = *(mdk_context->camera->update());
+
         // draw elements
         auto it = RenderContext::renderList.begin();
         while(it != RenderContext::renderList.end())
@@ -174,13 +176,16 @@ void RenderContext_OpenGL::render()
                 mdk_context->assets->loadFromFile(&str);
             }
 
+            mdk_context->assets->finalizeAssets();
+
             
         }
 
         // radio buttons for asset type
         static int r_prev = -1;
         static int r_current = -1;
-        ImGui::RadioButton("Textures", &r_current, 0); //ImGui::SameLine();
+        ImGui::RadioButton("Textures", &r_current, 0); ImGui::SameLine();
+        ImGui::RadioButton("Models", &r_current, 1);
 
         // asset list
         static std::vector<std::string> assets;
@@ -194,6 +199,10 @@ void RenderContext_OpenGL::render()
             {
                 case 0:
                     mdk_context->assets->availWidgets(assets);
+                    break;
+                case 1:
+                    mdk_context->assets->availModels(assets);
+                    break;
             }
 
             
@@ -221,13 +230,24 @@ void RenderContext_OpenGL::render()
 
             // clear render list
             clearRenderList();
+
+            std::string sel = std::string(items[selected_current]);
             
             switch (r_current)
             {
                 case 0:
-                    std::string sel = std::string(items[selected_current]);
-                    Widget* wid = mdk_context->assets->findWidget(&sel);
-                    addToRenderList(wid);
+                    {
+                        Widget* wid = mdk_context->assets->findWidget(&sel);
+                        addToRenderList(wid);
+                        break;
+                    }
+                case 1:
+                    {
+                        Model* m = mdk_context->assets->findModel(&sel);
+                        addToRenderList(m);
+                        break;
+                    }
+
             }
 
         }
