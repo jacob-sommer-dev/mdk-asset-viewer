@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <regex>
 
 #include <GL/glew.h>
 
@@ -25,6 +26,8 @@ class AssetManager
 {
 
 private:
+    std::regex pen;
+
     u_int disp_w;
     u_int disp_h;
 
@@ -33,6 +36,7 @@ private:
     std::map<std::string, Widget *> widgets;
     std::map<std::string, Texture *> textures;
     std::map<std::string, Brush *> brushes;
+    std::map<std::string, Brush *> stdBrushes;
     // std::map<std::string, Mesh *> meshes;
     // std::map<std::string, Animation *> animations;
     // std::map<std::string, int *> wavs;

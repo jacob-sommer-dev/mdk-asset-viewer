@@ -17,7 +17,13 @@ LOAD_#.LBB = loading screen. Pallete, WxH, and img data
 PALLETES
 768 bytes, 256 RGB (111)
 still need to work out transparencies
-index 0 seems to be transparent in some cases, maybe first 15 are treated as transparencies?
+index 0 seems to be transparent in some cases, maybe first 16 are treated as transparencies?
+regardless, the first 16 colors/first 48 bytes may be special
+named brushes seem to index starting after a 48 byte offset
+BUT
+PEN_# brushes DON'T - some of these (like in STREAM) would index out of 255 if + 16 would be applied
+e.g. PEN_255
+maybe conditionally add 16 if a regex doesn't match with PEN_#?
 
 FALL3D - ship -> level, dodge etc
 TRAVERSE - proper arena levels

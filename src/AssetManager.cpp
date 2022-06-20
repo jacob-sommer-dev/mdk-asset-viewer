@@ -6,11 +6,26 @@ AssetManager::AssetManager(u_int disp_w, u_int disp_h)
     this->disp_h = disp_h;
 
     currentPalette = nullptr;
+
+    pen = std::regex("PEN_\\d+");
+
+    // keep a standard set of brushes - some, like BONES in FALL, don't bring them over in the MTI
+    stdBrushes.emplace(std::string("WHITE"), new Brush((u_char)0, (u_char)0, (u_char)0, (u_char)255));
+
 }
 
 AssetManager::~AssetManager()
 {   
+    clear();
 
+    auto biter = stdBrushes.begin();
+    while(biter != stdBrushes.end())
+    {
+        //delete &(titer->first);
+        delete biter->second;
+        biter++;
+    }
+    stdBrushes.clear();
 }
 
 void AssetManager::nameFromFilename(const std::string *path, std::string& name)
@@ -29,7 +44,7 @@ void AssetManager::nameFromFilename(const std::string *path, std::string& name)
 int AssetManager::loadFromFile(const std::string *path)
 {
     char* dup = strdup((*path).c_str());
-    char* ext;
+    char* ext = 0;
 
     (ext = strchr(dup, '.')) ? ++ext : ext = dup;
 
@@ -104,11 +119,7 @@ int AssetManager::loadFromFile(const std::string *path)
             auto it = palettes.find(std::string(bni->records[28].title));
             currentPalette = it->second;
 
-            // load kurt model
-            t = std::string(bni->records[0].title);
-            l = bni->records[0].len;
-            d = bni->records[0].data;
-
+            // ensure mesh shaders are loaded
             std::string sname = std::string("Mesh");
             GLuint shader = findShader(&sname);
 
@@ -118,8 +129,21 @@ int AssetManager::loadFromFile(const std::string *path)
                 shaders.emplace(sname, shader);
             }
 
-            Model* m = new Model(t, d);
-            models.emplace(t, m);
+            // load kurt model
+            t = std::string(bni->records[0].title);
+            l = bni->records[0].len;
+            d = bni->records[0].data;
+
+            Model* kurt = new Model(t, d);
+            models.emplace(t, kurt);
+
+            // load max "bones" model
+            t = std::string(bni->records[4].title);
+            l = bni->records[4].len;
+            d = bni->records[4].data;
+
+            Model* max = new Model(t, d);
+            models.emplace(t, max);
 
         }
     }
@@ -179,9 +203,26 @@ int AssetManager::loadFromFile(const std::string *path)
                         }
 
                     }
-                } 
-                
-                // skip brushes for now
+                }
+                else if (record.metaf == 0)// && (record.metaa == record.metab == (u_short)65535)) // brush
+                {
+                    std::string namestr = std::string(record.title);
+                    u_char r = 0;
+                    u_char g = 0;
+                    u_char b = 0;
+                    u_short off = 16;
+
+                    if(std::regex_match(namestr, pen))
+                    {
+                        off = 0;
+                    }
+
+                    currentPalette->colorAt(record.metac + off, &r, &g, &b);
+
+                    Brush *brush = new Brush(r, g, b, (u_char)255);
+                    brushes.emplace(namestr, brush);
+                }
+
             }
 
             freemti(mti);
@@ -224,13 +265,23 @@ int AssetManager::clear()
     }
     textures.clear();
 
-    // auto miter = meshes.begin();
-    // while(miter != meshes.end())
-    // {
-    //     delete &(miter->first);
-    //     delete miter->second;
-    //     miter++;
-    // }
+    auto biter = brushes.begin();
+    while(biter != brushes.end())
+    {
+        //delete &(titer->first);
+        delete biter->second;
+        biter++;
+    }
+    brushes.clear();
+
+    auto miter = models.begin();
+    while(miter != models.end())
+    {
+        //delete &(miter->first);
+        delete miter->second;
+        miter++;
+    }
+    models.clear();
 
     // auto aiter = animations.begin();
     // while(aiter != animations.end())
@@ -248,14 +299,14 @@ int AssetManager::clear()
     //     waiter++;
     // }
 
-    // auto siter = shaders.begin();
-    // while(siter != shaders.end())
-    // {
-    //     //delete &(siter->first);
-    //     glDeleteProgram(siter->second);
-    //     siter++;
-    // }
-    // shaders.clear();
+    auto siter = shaders.begin();
+    while(siter != shaders.end())
+    {
+        //delete &(siter->first);
+        glDeleteProgram(siter->second);
+        siter++;
+    }
+    shaders.clear();
 
     return 0;
 }
@@ -299,8 +350,49 @@ Material* AssetManager::findMaterial(std::string* key)
         }
         else
         {
-            // any checking for specific brushes, maybe add them in constructor so we don't have to do this?
-            return nullptr;
+            // check the standard brushes
+            auto itsb = stdBrushes.find(*key);
+            if(itsb != stdBrushes.end())
+            {
+                return itsb->second;
+            }
+            else
+            {
+                // if the name matches PEN_# then we know the offset
+                // otherwise, just make it transparent
+
+                u_char r = 0;
+                u_char g = 0;
+                u_char b = 0;
+                u_char a = 0;
+
+
+                if(std::regex_match(*key, pen))
+                {
+                    // split the offset from PEN_
+                    char* dup = strdup((*key).c_str());
+                    char* idx = 0;
+                    char* pal_idx = 0;
+
+                    (idx = strchr(dup, '_')) ? ++idx : idx = dup;
+                    pal_idx = strchr(idx, '_');
+                    pal_idx = strndup(idx, pal_idx - idx);
+
+                    std::string name = std::string(pal_idx);
+                    u_char pindx = (u_char)std::stoi(name);
+
+                    currentPalette->colorAt(pindx, &r, &g, &b);
+
+                    a = 255;
+                    
+                }
+                
+                // lazy create and return brush
+                Brush *brush = new Brush(r, g, b, a);
+                brushes.emplace(*key, brush);
+
+                return brush;
+            }
         }
     }
 }
