@@ -11,8 +11,7 @@ Place the compiled executable in MDK's root directory (alongside MDK's executabl
 
 ### Features
 
-- SDL2 and Modern OpenGL renderer
-- Other engine functions adapted from [my basic renderer](https://github.com/jacob-sommer-dev/gles20-sdl2-fun)
+- SDL2 and modern OpenGL renderer
 - Dear ImGUI integration
 
 Currently Linux-only, Windows compatibility is planned.
