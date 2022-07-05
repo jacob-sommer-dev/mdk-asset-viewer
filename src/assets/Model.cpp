@@ -1,8 +1,12 @@
 #include "Model.hpp"
 #include "../MDK_Context.hpp"
 
-Model::Model(std::string name, void* data)
+Model::Model(std::string name, void* data, bool single)
 {
+    // find appropriate shader
+    std::string sname = std::string("Mesh");
+    GLuint shader = MDK_Context::get()->assets->findShader(&sname);
+
     this->name = name;
 
     // data index
@@ -23,19 +27,22 @@ Model::Model(std::string name, void* data)
         idx += 16;
     }
 
-    // number of meshes
-    numChildren = *((unsigned int*)((char*)data+idx));
-    idx += 4;
-
-    // find appropriate shader
-    std::string sname = std::string("Mesh");
-    GLuint shader = MDK_Context::get()->assets->findShader(&sname);
-
-    //children[numChildren];
-    // meshes construct themselves and increment idx
-    for(int i = 0; i < numChildren; i++)
+    if(single)
     {
-        children.push_back(new Mesh(data, &idx, numMats, shader));
+        children.push_back(new Mesh(data, &idx, numMats, shader, single));
+    }
+    else
+    {
+        // number of meshes
+        numChildren = *((unsigned int*)((char*)data+idx));
+        idx += 4;
+
+        //children[numChildren];
+        // meshes construct themselves and increment idx
+        for(int i = 0; i < numChildren; i++)
+        {
+            children.push_back(new Mesh(data, &idx, numMats, shader, single));
+        }
     }
 }
 

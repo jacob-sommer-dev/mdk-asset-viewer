@@ -3,21 +3,31 @@
 #include "Texture.hpp"
 #include "Brush.hpp"
 
-Mesh::Mesh(void* data, u_int* idx, u_int numMats, GLuint shader)
+Mesh::Mesh(void* data, u_int* idx, u_int numMats, GLuint shader, bool single)
 {
     this->shader = shader;
 
-    // mesh name
-    char cname[13]{0};
-    memcpy(cname, (char*)data+*idx, 12);
-    this->name.assign(cname);
-    *idx += 12;// * sizeof(char);
+    if(single)
+    {
+        this->name = std::string("mesh");
+        this->origin.x = 0.0f;
+        this->origin.y = 0.0f;
+        this->origin.z = 0.0f;
+    }
+    else
+    {
+        // mesh name
+        char cname[13]{0};
+        memcpy(cname, (char*)data+*idx, 12);
+        this->name.assign(cname);
+        *idx += 12;// * sizeof(char);
 
-    // origin
-    this->origin.x = *((float*)((char*)data+*idx));
-    this->origin.y = *((float*)((char*)data+*idx + sizeof(float)));
-    this->origin.z = *((float*)((char*)data+*idx + sizeof(float)*2));
-    *idx += 3 * sizeof(float);
+        // origin
+        this->origin.x = *((float*)((char*)data+*idx));
+        this->origin.y = *((float*)((char*)data+*idx + sizeof(float)));
+        this->origin.z = *((float*)((char*)data+*idx + sizeof(float)*2));
+        *idx += 3 * sizeof(float);
+    }
 
     // num verts
     num_verts = *((int*)((char*)data+*idx));

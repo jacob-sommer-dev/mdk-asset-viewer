@@ -29,7 +29,7 @@ private:
     bool ready = false;
 
 public:
-    Model(std::string name, void* data);
+    Model(std::string name, void* data, bool single);
     ~Model();
 
     void load();

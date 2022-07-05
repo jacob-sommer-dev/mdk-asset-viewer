@@ -134,7 +134,7 @@ int AssetManager::loadFromFile(const std::string *path)
             l = bni->records[0].len;
             d = bni->records[0].data;
 
-            Model* kurt = new Model(t, d);
+            Model* kurt = new Model(t, d, false);
             models.emplace(t, kurt);
 
             // load max "bones" model
@@ -142,8 +142,76 @@ int AssetManager::loadFromFile(const std::string *path)
             l = bni->records[4].len;
             d = bni->records[4].data;
 
-            Model* max = new Model(t, d);
+            Model* max = new Model(t, d, false);
             models.emplace(t, max);
+
+            // load missile model
+            t = std::string(bni->records[6].title);
+            l = bni->records[6].len;
+            d = bni->records[6].data;
+
+            Model* missile = new Model(t, d, false);
+            models.emplace(t, missile);
+
+            // load chute model
+            t = std::string(bni->records[7].title);
+            l = bni->records[7].len;
+            d = bni->records[7].data;
+
+            Model* chute = new Model(t, d, false);
+            models.emplace(t, chute);
+
+            // load item models
+            for(int i = 9; i < 22; i++)
+            {
+                t = std::string(bni->records[i].title);
+                l = bni->records[i].len;
+                d = bni->records[i].data;
+
+                Model* m = new Model(t, d, true);
+                models.emplace(t, m);
+            }
+
+            // load dummy model
+            t = std::string(bni->records[22].title);
+            l = bni->records[22].len;
+            d = bni->records[22].data;
+
+            Model* dummy = new Model(t, d, false);
+            models.emplace(t, dummy);
+
+            // load H150 model
+            t = std::string(bni->records[23].title);
+            l = bni->records[23].len;
+            d = bni->records[23].data;
+
+            Model* h150 = new Model(t, d, false);
+            models.emplace(t, h150);
+
+            // load thump model
+            t = std::string(bni->records[24].title);
+            l = bni->records[24].len;
+            d = bni->records[24].data;
+
+            Model* thump = new Model(t, d, false);
+            models.emplace(t, thump);
+
+            // load twist model
+            t = std::string(bni->records[25].title);
+            l = bni->records[25].len;
+            d = bni->records[25].data;
+
+            Model* twist = new Model(t, d, false);
+            models.emplace(t, twist);
+
+            // load inter model
+            t = std::string(bni->records[26].title);
+            l = bni->records[26].len;
+            d = bni->records[26].data;
+
+            Model* inter = new Model(t, d, false);
+            models.emplace(t, inter);
+
 
         }
     }

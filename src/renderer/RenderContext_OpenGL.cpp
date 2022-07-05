@@ -88,7 +88,7 @@ RenderContext_OpenGL::RenderContext_OpenGL(u_int disp_width, u_int disp_height)
 	glDepthFunc(GL_LESS);
 
 	// set the clear color to dark grey
-	glClearColor(1.0f, 0.2f, 1.0f, 1.0f);//(0.2f, 0.2f, 0.2f, 1.0f);
+	glClearColor(0.3f, 0.1f, 0.3f, 1.0f);//(0.2f, 0.2f, 0.2f, 1.0f);
 	glClearDepthf(1.0f);
 
     // set up imgui

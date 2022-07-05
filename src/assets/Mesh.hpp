@@ -68,7 +68,7 @@ private:
     bool ready = false;
 
 public:
-    Mesh(void* data, u_int* start, u_int numMats, GLuint shader);
+    Mesh(void* data, u_int* start, u_int numMats, GLuint shader, bool single);
     ~Mesh();
 
     void load(std::vector<Material*>*);
