@@ -8,13 +8,25 @@
 
 #include "AssetManager.hpp"
 
+typedef struct _mouse_state {
+    bool init = false;
+    int x = 0;
+    int y = 0;
+} MouseState;
+
 class MDK_Context
 {
 
 private:
 
+    MouseState mouse;
+
     u_int disp_w;
     u_int disp_h;
+    u_int disp_half_w;
+    u_int disp_half_h;
+
+    float m_sensitivity = 0.5f;
 
     RenderContext* renderer;
 
@@ -25,6 +37,8 @@ public:
 
     float fov;
     Camera* camera;
+
+    bool m_handle = false;
 
     static constexpr float physT = (1.0f/60.0f); // physics timestep in s
 

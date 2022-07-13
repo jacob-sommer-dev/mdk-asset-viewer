@@ -5,11 +5,19 @@
 #include "../Camera.hpp"
 #include "../ecs/Renderable.hpp"
 
+#include "../dear_imgui/imgui.h"
+
 class RenderContext
 {
 
 private:
-    
+
+
+protected:
+    SDL_Window *window = NULL;
+
+    ImVec4 imguiClearColor;
+    bool drawImgui = true;
 
 public:
 
@@ -50,7 +58,23 @@ public:
         renderList.clear();
     }
 
+    void toggleImgui()
+    {
+        drawImgui = !drawImgui;
+    }
+
+    bool imguiActive()
+    {
+        return drawImgui;
+    }
+
+    SDL_Window* getSdlWindow()
+    {
+        return window;
+    }
+
     virtual void render() = 0;
+
 };
 
 #endif

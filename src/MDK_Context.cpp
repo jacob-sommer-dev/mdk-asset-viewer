@@ -1,5 +1,7 @@
 #include "MDK_Context.hpp"
 
+#include <iostream>
+
 MDK_Context::MDK_Context() {}
 
 MDK_Context::~MDK_Context() {}
@@ -10,8 +12,9 @@ int MDK_Context::Init(float fov, u_int disp_w, u_int disp_h)
     this->fov = fov;
     this->disp_w = disp_w;
     this->disp_h = disp_h;
+    this->disp_half_w = disp_w / 2;
+    this->disp_half_h = disp_h / 2;
 
-    // TODO move this into render context
     camera = new Camera(fov, (float)disp_w / (float)disp_h);
 
     renderer = getRenderContext(disp_w, disp_h, OpenGL45);
@@ -55,58 +58,54 @@ int MDK_Context::setvFoV(float fov)
 
 void MDK_Context::handleSDLKeyEvent(SDL_Event *eventp)
 {
-    // SDL_Event event = *eventp;
-    // switch ((event).type)
-    // {
-    //     case SDL_KEYUP:
-    //         if (event.key.keysym.sym == SDLK_3)
-    //         {
-    //             std::string str2 = std::string("LOAD_3");
-    //             Widget* widget = assets->findWidget(&str2);
-    //             if(widget != nullptr)
-    //                 addToRenderList(widget);
-    //         }
-    //         else if (event.key.keysym.sym == SDLK_4)
-    //         {
-    //             std::string str2 = std::string("LOAD_4");
-    //             Widget* widget = assets->findWidget(&str2);
-    //             if(widget != nullptr)
-    //                 addToRenderList(widget);
-    //         }
-    //         else if (event.key.keysym.sym == SDLK_5)
-    //         {
-    //             std::string str2 = std::string("LOAD_5");
-    //             Widget* widget = assets->findWidget(&str2);
-    //             if(widget != nullptr)
-    //                 addToRenderList(widget);
-    //         }
-    //         else if (event.key.keysym.sym == SDLK_6)
-    //         {
-    //             std::string str2 = std::string("LOAD_6");
-    //             Widget* widget = assets->findWidget(&str2);
-    //             if(widget != nullptr)
-    //                 addToRenderList(widget);
-    //         }
-    //         else if (event.key.keysym.sym == SDLK_7)
-    //         {
-    //             std::string str2 = std::string("LOAD_7");
-    //             Widget* widget = assets->findWidget(&str2);
-    //             if(widget != nullptr)
-    //                 addToRenderList(widget);
-    //         }
-    //         else if (event.key.keysym.sym == SDLK_8)
-    //         {
-    //             std::string str2 = std::string("LOAD_8");
-    //             Widget* widget = assets->findWidget(&str2);
-    //             if(widget != nullptr)
-    //                 addToRenderList(widget);
-    //         }
-    // }
+    SDL_Event event = *eventp;
+    switch ((event).type)
+    {
+        case SDL_KEYUP:
+            if (event.key.keysym.sym == SDLK_BACKQUOTE)
+            {
+                renderer->toggleImgui();
+
+                bool iactive = renderer->imguiActive();
+
+                int cur = (iactive) ? SDL_ENABLE : SDL_DISABLE;
+                //SDL_ShowCursor(cur);
+
+                if(!iactive)
+                {
+                    SDL_Window* window = renderer->getSdlWindow();
+                    SDL_WarpMouseInWindow(window, disp_half_w, disp_half_h);
+                }
+                
+                m_handle = !iactive;
+            }
+    }
 }
 
 void MDK_Context::handleSDLMouseEvent(SDL_Event *event)
 {
+    if(m_handle && event->type == SDL_MOUSEMOTION)
+    {
+        int x, y;
+        SDL_GetMouseState(&x, &y);
 
+        if(!mouse.init)
+        {
+            mouse.x = x;
+            mouse.y = y;
+            mouse.init = true;
+        }
+
+        std::cout << "X: " << x << " Y: " << y << std::endl;
+
+        float xoff = (x - mouse.x) * m_sensitivity;
+        float yoff = (mouse.y - y) * m_sensitivity;
+
+        mouse.x = x;
+        mouse.y = y;
+
+        camera->rotate(yoff, xoff);
+    }
 }
 
 void MDK_Context::handleSDLEvent(SDL_Event *event)

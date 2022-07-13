@@ -124,19 +124,21 @@ RenderContext_OpenGL::~RenderContext_OpenGL()
 
 void RenderContext_OpenGL::render()
 {
-        // clear buffers
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // clear buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        viewMat = *(mdk_context->camera->update());
+    viewMat = *(mdk_context->camera->update());
 
-        // draw elements
-        auto it = RenderContext::renderList.begin();
-        while(it != RenderContext::renderList.end())
-        {
-            (*it)->draw(&projMat, &viewMat);
-            it++;
-        }
+    // draw elements
+    auto it = RenderContext::renderList.begin();
+    while(it != RenderContext::renderList.end())
+    {
+        (*it)->draw(&projMat, &viewMat);
+        it++;
+    }
 
+    if(drawImgui)
+    {
         // build and render imgui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
@@ -148,7 +150,7 @@ void RenderContext_OpenGL::render()
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         // ImGui::Text("Elapsed frametime ms: %.3f", elapsedT);
         // ImGui::Text("Elapsed acc after phys ms: %.3f", acc);
-        
+            
         glm::vec3 *campos = mdk_context->getCameraPos();
         ImGui::Text("Camera X: %.3f Y: %.3f Z: %.3f", campos->x, campos->y, campos->z);
 
@@ -177,8 +179,7 @@ void RenderContext_OpenGL::render()
             }
 
             mdk_context->assets->finalizeAssets();
-
-            
+              
         }
 
         // radio buttons for asset type
@@ -204,8 +205,7 @@ void RenderContext_OpenGL::render()
                     mdk_context->assets->availModels(assets);
                     break;
             }
-
-            
+                
             for(int i = 0; i < assets.size(); i++)
             {
                 items[i] = assets[i].c_str();
@@ -232,21 +232,23 @@ void RenderContext_OpenGL::render()
             clearRenderList();
 
             std::string sel = std::string(items[selected_current]);
-            
+                
             switch (r_current)
             {
                 case 0:
-                    {
-                        Widget* wid = mdk_context->assets->findWidget(&sel);
-                        addToRenderList(wid);
-                        break;
-                    }
+                {
+                    Widget* wid = mdk_context->assets->findWidget(&sel);
+                    addToRenderList(wid);
+                    break;
+                }
+                    
                 case 1:
-                    {
-                        Model* m = mdk_context->assets->findModel(&sel);
-                        addToRenderList(m);
-                        break;
-                    }
+                {
+                    Model* m = mdk_context->assets->findModel(&sel);
+                    addToRenderList(m);
+                    break;
+                }
+                    
 
             }
 
@@ -256,7 +258,8 @@ void RenderContext_OpenGL::render()
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
 
-        // present
-        SDL_GL_SwapWindow(window);
+    // present
+    SDL_GL_SwapWindow(window);
 }

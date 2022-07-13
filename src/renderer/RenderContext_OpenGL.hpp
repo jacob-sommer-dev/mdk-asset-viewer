@@ -26,10 +26,7 @@ private:
     u_int disp_w;
     u_int disp_h;
 
-    SDL_Window *window = NULL;
     SDL_GLContext glcontext = NULL;
-
-    ImVec4 imguiClearColor;
 
     ~RenderContext_OpenGL();
 

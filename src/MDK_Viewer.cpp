@@ -68,7 +68,7 @@ int SDL_main(int argc, char *args[])
 
             if(!io.WantCaptureMouse)
             {
-                mdk_context->handleSDLKeyEvent(&event);
+                mdk_context->handleSDLMouseEvent(&event);
             }
 
             if(!io.WantCaptureKeyboard)
@@ -80,7 +80,10 @@ int SDL_main(int argc, char *args[])
         }
 
         // give context keystates
-        mdk_context->handleKeyStates(keystates, &elapsedT);
+        if(!io.WantCaptureKeyboard)
+        {
+            mdk_context->handleKeyStates(keystates, &elapsedT);
+        }
 
         // physics update
         mdk_context->doPhysics(&acc);

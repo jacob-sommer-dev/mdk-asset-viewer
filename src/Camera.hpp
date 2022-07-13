@@ -21,14 +21,26 @@ class Camera
 
 private:
 
+	float moveSpeed = 5.0f;
+
 	glm::mat4 viewMatrix = glm::mat4(1.0f);
     glm::mat4 projMatrix;// = glm::mat4(1.0f);
 
 	glm::mat4 rotation = glm::mat4(1.0f);
 	glm::vec3 position = glm::vec3(0.0f);
 
+	glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 right = glm::vec3(-1.0f, 0.0f, 0.0f);
+
+	glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
     glm::vec3 velocity = glm::vec3(0.0f);
     glm::vec3 accel = glm::vec3(0.0f);
+
+	float yaw = -90.0f;
+	float pitch = 0.0f;
+	float roll = 0.0f;
 
     const float mov = 5.0f;
     const float rot = M_PI * 0.2f; // 1/10th of 2 pi
@@ -53,6 +65,7 @@ public:
 	void setRotation(float radians, float x, float y, float z);
 	void rotate(float radians, float x, float y, float z);
     void handleKeys(const Uint8 *keystates, const float* dt);
+	void rotate(float add_pitch, float add_yaw);
 	
 };
 
