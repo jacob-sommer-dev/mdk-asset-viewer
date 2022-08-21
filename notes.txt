@@ -213,16 +213,31 @@ n * 16 = texture/brush names
 quirks - BONES model has FF FF (FALL3D.BNI) or F0 FF (STREAM.BNI) as material reference... should be white, so static replacement? default base color?
 
 ANIMATIONS
-4 = 00 00 80 3F - ? float = 1.0
-4 = # animating parts?
+4 = 00 00 80 3F - ? float = 1.0 - version?
+4 = # animating parts
+4 = ?something (# of frames?)
+-- for # of parts... --
+    4 = offset (after first 4 bytes) to the part
 4 = ?
-4 = offset from after #parts to the part
--- part
+#something * 12 = ? (bunch of 0s)
+-- part type A
+
+
+Looks like there may be two methods of animating parts:
+- Method A:
 12 = name
 4 = # of vertices, matches model part # verts
-4 = ?
-2 = ?
-n (verts) * 12 = vertex ?initial position?
+6 = ?
+n (verts) * 12 (3 floats) = vertex ?initial position? first frame?
+#something * 24 = ? (offset and rotation? dont seem to be floats though)
+-- Method B:
+12 = name
+4 = # of vertices, matches model part # verts
+#verts * 3 * 4 = initial position? Looks like there's an extra float (4 bytes)
+- for the number of frames(?)
+    2 = frame index
+    3 * #verts = data. each char is signed fractional (1/10? 1/100?) offset in x y z(?)
+2 = FF FF
 
 
 

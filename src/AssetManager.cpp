@@ -137,6 +137,14 @@ int AssetManager::loadFromFile(const std::string *path)
             Model* kurt = new Model(t, d, false);
             models.emplace(t, kurt);
 
+            // load explode model
+            t = std::string(bni->records[1].title);
+            l = bni->records[1].len;
+            d = bni->records[1].data;
+
+            Model* exp = new Model(t, d, true);
+            models.emplace(t, exp);
+
             // load max "bones" model
             t = std::string(bni->records[4].title);
             l = bni->records[4].len;

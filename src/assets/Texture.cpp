@@ -20,7 +20,7 @@ Texture::Texture(const void* palette, const void* data, int start, unsigned shor
 
 	for(int i = 0; i < len; i++)
 	{
-		unsigned char pd = *((unsigned char*)data + sizeof(char) * i);
+		unsigned char pd = *((unsigned char*)data + sizeof(char) * i + start);
 
 		if(vflip) // may not need this anymore, but keep it for now just in case
 		{
