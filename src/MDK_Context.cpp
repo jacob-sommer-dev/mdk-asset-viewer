@@ -6,7 +6,7 @@ MDK_Context::MDK_Context() {}
 
 MDK_Context::~MDK_Context() {}
 
-int MDK_Context::Init(float fov, u_int disp_w, u_int disp_h)
+int MDK_Context::Init(float fov, unsigned int disp_w, unsigned int disp_h)
 {
 
     this->fov = fov;
@@ -34,7 +34,7 @@ int MDK_Context::Deinit()
     return 0;
 }
 
-int MDK_Context::setDisplayDimens(u_int disp_w, u_int disp_h)
+int MDK_Context::setDisplayDimens(unsigned int disp_w, unsigned int disp_h)
 {
     this->disp_w = disp_w;
     this->disp_h = disp_h;
@@ -44,7 +44,7 @@ int MDK_Context::setDisplayDimens(u_int disp_w, u_int disp_h)
     return 0;
 }
 
-void MDK_Context::getDisplayDimens(u_int *disp_w, u_int *disp_h)
+void MDK_Context::getDisplayDimens(unsigned int *disp_w, unsigned int *disp_h)
 {
     *disp_w = this->disp_w;
     *disp_h = this->disp_h;

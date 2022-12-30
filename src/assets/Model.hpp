@@ -19,10 +19,10 @@ class Model : public Renderable, public Movable, public Rotatable, public Scalab
 
 private:
     std::string name;
-    u_int numMats;
+    unsigned int numMats;
     std::vector<std::string*> matNames;
     std::vector<Material*> materials;
-    u_int numChildren;
+    unsigned int numChildren;
     std::vector<Mesh*> children;
     //std::map<std::string, Animation*> anims;
 

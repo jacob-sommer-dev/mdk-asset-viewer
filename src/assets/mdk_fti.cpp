@@ -4,7 +4,7 @@ int parsefti(char *filename, FTI* fti)
 {
     FILE *ftifile;
 
-    if((ftifile = fopen(filename, "r")) == NULL)
+    if((ftifile = fopen(filename, "rb")) == NULL)
     {
         printf("mdk_fti: can't open %s\n", filename);
         return -1;
@@ -21,17 +21,17 @@ int parsefti(char *filename, FTI* fti)
         size_t read;
 
         // read len of file
-        read = fread(&(fti->header->length), __SIZEOF_INT__, 1, ftifile);
+        read = fread(&(fti->header->length), sizeof(int), 1, ftifile);
         if(read != 1)
         {
             printf("mdk_fti: Couldn't read header: length\n");
             return -1;
         }
         // set offset, record data is offset from this
-        foff = __SIZEOF_INT__;
+        foff = sizeof(int);
 
         // read the number of record entries
-        read = fread(&(fti->header->num_entries), __SIZEOF_INT__, 1, ftifile);
+        read = fread(&(fti->header->num_entries), sizeof(int), 1, ftifile);
         if(read != 1)
         {
             printf("mdk_fti: Couldn't read header: number of entries\n");
@@ -56,7 +56,7 @@ int parsefti(char *filename, FTI* fti)
             record->title[8] = '\0';
 
             // -- offset --
-            read = fread(&(record->offset), __SIZEOF_INT__, 1, ftifile);
+            read = fread(&(record->offset), sizeof(int), 1, ftifile);
             if(read != 1)
             {
                 printf("mdk_fti: Couldn't read record header %d of %d: offset\n", i, fti->header->num_entries);

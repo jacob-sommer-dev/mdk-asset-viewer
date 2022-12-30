@@ -1,7 +1,7 @@
 #include "Widget.hpp"
 
 
-Widget::Widget(GLuint texture, u_short w, u_short h, const u_int *disp_w, const u_int *disp_h, GLuint shader)
+Widget::Widget(GLuint texture, unsigned short w, unsigned short h, const unsigned int *disp_w, const unsigned int *disp_h, GLuint shader)
 {
     this->texture = texture;
 
@@ -17,7 +17,7 @@ Widget::Widget(GLuint texture, u_short w, u_short h, const u_int *disp_w, const 
         -x, -y, 0.0f,   0.0f, 1.0f,
         -x,  y, 0.0f,   0.0f, 0.0f
     };
-    u_int indices[] =
+    unsigned int indices[] =
     {
         0, 1, 2,
         1, 3, 2

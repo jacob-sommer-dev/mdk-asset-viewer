@@ -19,7 +19,7 @@ MessageCallback( GLenum source,
             type, severity, message );
 }
 
-RenderContext_OpenGL::RenderContext_OpenGL(u_int disp_width, u_int disp_height)
+RenderContext_OpenGL::RenderContext_OpenGL(unsigned int disp_width, unsigned int disp_height)
 {
     mdk_context = MDK_Context::get();
 

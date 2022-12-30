@@ -33,7 +33,7 @@ static size_t getFileLength(FILE* file) {
  * @return GLuint the shader's ID, or 0 if failed
  */
 static GLuint loadShader(const char* filename, GLenum shaderType) {
-	FILE* file = fopen(filename, "r");
+	FILE* file = fopen(filename, "rb");
 	if (!file) {
 		SDL_Log("Can't open file: %s\n", filename);
 		return 0;

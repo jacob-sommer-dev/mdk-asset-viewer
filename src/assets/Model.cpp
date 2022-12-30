@@ -10,7 +10,7 @@ Model::Model(std::string name, void* data, bool single)
     this->name = name;
 
     // data index
-    u_int idx = 0;
+    unsigned int idx = 0;
 
     // number of materials
     numMats = *((unsigned int*)data);

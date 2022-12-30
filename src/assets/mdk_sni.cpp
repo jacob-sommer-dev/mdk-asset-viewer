@@ -4,7 +4,7 @@ int parsesni(char *filename, SNI *sni)
 {
     FILE *snifile;
 
-    if((snifile = fopen(filename, "r")) == NULL)
+    if((snifile = fopen(filename, "rb")) == NULL)
     {
         printf("mdk_sni: can't open %s\n", filename);
         return -1;
@@ -21,14 +21,14 @@ int parsesni(char *filename, SNI *sni)
         size_t read;
 
         // read len of file
-        read = fread(&(sni->header->length), __SIZEOF_INT__, 1, snifile);
+        read = fread(&(sni->header->length), sizeof(int), 1, snifile);
         if(read != 1)
         {
             printf("mdk_sni: Couldn't read header: length\n");
             return -1;
         }
         // set offset, record data is offset from this
-        foff = __SIZEOF_INT__;
+        foff = sizeof(int);
         
         // read file name
         read = fread(sni->header->title, sizeof(char), 12, snifile);
@@ -40,7 +40,7 @@ int parsesni(char *filename, SNI *sni)
         sni->header->title[12] = '\0';
 
         // read data len
-        read = fread(&(sni->header->foot_off), __SIZEOF_INT__, 1, snifile);
+        read = fread(&(sni->header->foot_off), sizeof(int), 1, snifile);
         if(read != 1)
         {
             printf("mdk_sni: Couldn't read header: foot_off\n");
@@ -48,7 +48,7 @@ int parsesni(char *filename, SNI *sni)
         }
 
         // read the number of record entries
-        read = fread(&(sni->header->num_entries), __SIZEOF_INT__, 1, snifile);
+        read = fread(&(sni->header->num_entries), sizeof(int), 1, snifile);
         if(read != 1)
         {
             printf("mdk_sni: Couldn't read header: number of entries\n");
@@ -73,7 +73,7 @@ int parsesni(char *filename, SNI *sni)
             record->title[12] = '\0';
 
             // -- meta --
-            read = fread(&(record->meta), __SIZEOF_INT__, 1, snifile);
+            read = fread(&(record->meta), sizeof(int), 1, snifile);
             if(read != 1)
             {
                 printf("mdk_sni: Couldn't read record header %d of %d: meta\n", i, sni->header->num_entries);
@@ -81,7 +81,7 @@ int parsesni(char *filename, SNI *sni)
             }
 
             // -- offset --
-            read = fread(&(record->offset), __SIZEOF_INT__, 1, snifile);
+            read = fread(&(record->offset), sizeof(int), 1, snifile);
             if(read != 1)
             {
                 printf("mdk_sni: Couldn't read record header %d of %d: offset\n", i, sni->header->num_entries);
@@ -89,7 +89,7 @@ int parsesni(char *filename, SNI *sni)
             }
 
             // -- len --
-            read = fread(&(record->len), __SIZEOF_INT__, 1, snifile);
+            read = fread(&(record->len), sizeof(int), 1, snifile);
             if(read != 1)
             {
                 printf("mdk_sni: Couldn't read record header %d of %d: len\n", i, sni->header->num_entries);

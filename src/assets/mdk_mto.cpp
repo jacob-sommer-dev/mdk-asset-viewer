@@ -4,7 +4,7 @@ int parsemto(char *filename, MTO* mto)
 {
     FILE *mtofile;
 
-    if((mtofile = fopen(filename, "r")) == NULL)
+    if((mtofile = fopen(filename, "rb")) == NULL)
     {
         printf("mdk_mto: can't open %s\n", filename);
         return -1;
@@ -18,7 +18,7 @@ int parsemto(char *filename, MTO* mto)
         size_t read;
 
         // read len of file
-        read = fread(&(mto->header->length), __SIZEOF_INT__, 1, mtofile);
+        read = fread(&(mto->header->length), sizeof(int), 1, mtofile);
         if(read != 1)
         {
             printf("mdk_mto: Couldn't read header: length\n");
@@ -35,7 +35,7 @@ int parsemto(char *filename, MTO* mto)
         mto->header->title[12] = '\0';
 
         // read data len
-        read = fread(&(mto->header->foot_off), __SIZEOF_INT__, 1, mtofile);
+        read = fread(&(mto->header->foot_off), sizeof(int), 1, mtofile);
         if(read != 1)
         {
             printf("mdk_mto: Couldn't read header: foot_off\n");
@@ -43,7 +43,7 @@ int parsemto(char *filename, MTO* mto)
         }
 
         // read the number of record entries
-        read = fread(&(mto->header->num_entries), __SIZEOF_INT__, 1, mtofile);
+        read = fread(&(mto->header->num_entries), sizeof(int), 1, mtofile);
         if(read != 1)
         {
             printf("mdk_mto: Couldn't read header: number of entries\n");
@@ -68,7 +68,7 @@ int parsemto(char *filename, MTO* mto)
             record->title[8] = '\0';
 
             // -- offset --
-            read = fread(&(record->offset), __SIZEOF_INT__, 1, mtofile);
+            read = fread(&(record->offset), sizeof(int), 1, mtofile);
             if(read != 1)
             {
                 printf("mdk_mto: Couldn't read record header %d of %d: offset\n", i, mto->header->num_entries);

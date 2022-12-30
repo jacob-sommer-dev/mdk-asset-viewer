@@ -25,7 +25,7 @@ int SDL_main(int argc, char *args[])
     atexit(SDL_Quit);
     
     // mdk context
-    mdk_context->Init(60.0f, 1920, 1080);
+    mdk_context->Init(60.0f, 1280, 720);
 
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	// io.ConfigFlags for additional input
@@ -103,7 +103,7 @@ int SDL_main(int argc, char *args[])
 }
 
 
-int main(int argc, char **args)
-{
-    return SDL_main(argc, args);
-}
+// int main(int argc, char **args)
+// {
+//     return SDL_main(argc, args);
+// }

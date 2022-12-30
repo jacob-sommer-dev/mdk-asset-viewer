@@ -1,6 +1,6 @@
 #include "RenderContextFactory.h"
 
-RenderContext* getRenderContext(u_int disp_w, u_int disp_h, RENDERERS  renderType)
+RenderContext* getRenderContext(unsigned int disp_w, unsigned int disp_h, RENDERERS  renderType)
 {
     switch (renderType)
     {

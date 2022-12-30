@@ -4,7 +4,7 @@ int parsebni(const char *filename, BNI* bni)
 {
     FILE *bnifile;
 
-    if((bnifile = fopen(filename, "r")) == NULL)
+    if((bnifile = fopen(filename, "rb")) == NULL)
     {
         printf("mdk_bni: can't open %s\n", filename);
         return -1;
@@ -18,7 +18,7 @@ int parsebni(const char *filename, BNI* bni)
         size_t read;
 
         // read len of file
-        read = fread(&(bni->header->length), __SIZEOF_INT__, 1, bnifile);
+        read = fread(&(bni->header->length), sizeof(int), 1, bnifile);
         if(read != 1)
         {
             printf("mdk_bni: Couldn't read header: length\n");
@@ -26,7 +26,7 @@ int parsebni(const char *filename, BNI* bni)
         }
 
         // read the number of record entries
-        read = fread(&(bni->header->num_entries), __SIZEOF_INT__, 1, bnifile);
+        read = fread(&(bni->header->num_entries), sizeof(int), 1, bnifile);
         if(read != 1)
         {
             printf("mdk_bni: Couldn't read header: number of entries\n");
@@ -45,16 +45,24 @@ int parsebni(const char *filename, BNI* bni)
             read = fread(record->title, sizeof(char), 12, bnifile); // read 12 from the file
             if(read != 12)
             {
-                printf("mdk_bni: Couldn't read record header %d of %d: title\n", i, bni->header->num_entries);
+                printf("mdk_bni: Couldn't read record header %d of %d: title\n", i+1, bni->header->num_entries);
                 return -1;
             }
             record->title[13] = '\0';
 
             // -- offset --
-            read = fread(&(record->offset), __SIZEOF_INT__, 1, bnifile);
+            read = fread(&(record->offset), sizeof(int), 1, bnifile);
             if(read != 1)
             {
-                printf("mdk_bni: Couldn't read record header %d of %d: offset\n", i, bni->header->num_entries);
+                printf("mdk_bni: Couldn't read record header %d of %d: offset\n", i+1, bni->header->num_entries);
+                // if(ferror(bnifile)) 
+                // {
+                //     printf("error");
+                // } 
+                // else if(feof(bnifile))
+                // {
+                //     printf("eof");
+                // }
                 return -1;
             }
 
@@ -72,7 +80,7 @@ int parsebni(const char *filename, BNI* bni)
             // read to the next offset, or EOF if last record
             if(i == bni->header->num_entries - 1)
             {
-                end = bni->header->length + 4; // total length, including first 4
+                end = bni->header->length; // total length
             }
             else 
             {
@@ -96,7 +104,7 @@ int parsebni(const char *filename, BNI* bni)
             // seek to the start of the data
             if(fseek(bnifile, (long)start, SEEK_SET) != 0)
             {
-                printf("mdk_bni: Couldn't seek to record data %d of %d\n", i, bni->header->num_entries);
+                printf("mdk_bni: Couldn't seek to record data %d of %d\n", i+1, bni->header->num_entries);
                 return -1;
             }
 
@@ -105,7 +113,15 @@ int parsebni(const char *filename, BNI* bni)
             read = fread(record->data, 1, len, bnifile);
             if(read != len)
             {
-                printf("mdk_bni: Couldn't read record data %d of %d\n", i, bni->header->num_entries);
+                printf("mdk_bni: Couldn't read record data %d of %d\n", i+1, bni->header->num_entries);
+                if(ferror(bnifile)) 
+                {
+                    printf("error");
+                } 
+                else if(feof(bnifile))
+                {
+                    printf("eof");
+                }
                 return -1;
             }
         }

@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "(gdb) Launch linux",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/out/mdkav",
@@ -28,7 +28,33 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++ build mdkav"
+            "preLaunchTask": "C/C++: g++ linux build mdkav"
+        },
+        {
+            "name": "(gdb) Launch windows",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/out/mdkav",
+            "args": [
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/out/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description":  "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "C/C++: g++ windows build mdkav"
         }
 
     ]

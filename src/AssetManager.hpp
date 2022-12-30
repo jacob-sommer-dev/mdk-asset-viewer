@@ -28,8 +28,8 @@ class AssetManager
 private:
     std::regex pen;
 
-    u_int disp_w;
-    u_int disp_h;
+    unsigned int disp_w;
+    unsigned int disp_h;
 
     Palette* currentPalette = nullptr;
     std::map<std::string, Palette *> palettes;
@@ -47,7 +47,7 @@ private:
 
 public:
 
-    AssetManager(u_int disp_w, u_int disp_h);
+    AssetManager(unsigned int disp_w, unsigned int disp_h);
     ~AssetManager();
 
     void nameFromFilename(const std::string *, std::string &);

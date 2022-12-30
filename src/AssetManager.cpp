@@ -1,6 +1,7 @@
 #include "AssetManager.hpp"
+#include "util/strndup.h"
 
-AssetManager::AssetManager(u_int disp_w, u_int disp_h) 
+AssetManager::AssetManager(unsigned int disp_w, unsigned int disp_h) 
 {
     this->disp_w = disp_w;
     this->disp_h = disp_h;
@@ -10,7 +11,7 @@ AssetManager::AssetManager(u_int disp_w, u_int disp_h)
     pen = std::regex("PEN_\\d+");
 
     // keep a standard set of brushes - some, like BONES in FALL, don't bring them over in the MTI
-    stdBrushes.emplace(std::string("WHITE"), new Brush((u_char)0, (u_char)0, (u_char)0, (u_char)255));
+    stdBrushes.emplace(std::string("WHITE"), new Brush((unsigned char)0, (unsigned char)0, (unsigned char)0, (unsigned char)255));
 
 }
 
@@ -57,7 +58,7 @@ int AssetManager::loadFromFile(const std::string *path)
         name = strchr(fn, '.');
         name = strndup(fn, name - fn);
 
-        u_short w,h;
+        unsigned short w,h;
         Texture* texture = loadlbb(path, &w, &h);
 
         if(texture != nullptr)
@@ -103,7 +104,7 @@ int AssetManager::loadFromFile(const std::string *path)
         {
             // 28-32 are palettes, load first
             std::string t = std::string(bni->records[28].title);
-            u_int l = bni->records[28].len;
+            unsigned int l = bni->records[28].len;
             void* d = bni->records[28].data;
 
             Palette* p = new Palette();
@@ -240,11 +241,11 @@ int AssetManager::loadFromFile(const std::string *path)
             for (int i = 0; i < mti->header->num_entries; i++)
             {
                 MTI_RECORD record = mti->records[i];
-                if(record.metaf == (u_short)16480) // 60 40, TODO: but remember to check for weird entries like in LEVEL_3S.MTI
+                if(record.metaf == (unsigned short)16480) // 60 40, TODO: but remember to check for weird entries like in LEVEL_3S.MTI
                 {
-                    u_int offset = 0;
+                    unsigned int offset = 0;
 
-                    if(record.metab == (u_short)1)
+                    if(record.metab == (unsigned short)1)
                     {
                         // sprite sheet
 
@@ -252,11 +253,11 @@ int AssetManager::loadFromFile(const std::string *path)
                     else 
                     {
                         // regular texture
-                        u_short w = *((u_short*)record.data);
-                        u_short h = *((u_short*)(record.data) + 1);
+                        unsigned short w = *((unsigned short*)record.data);
+                        unsigned short h = *((unsigned short*)(record.data) + 1);
                         const void* p;
                         currentPalette->palette(p);
-                        Texture* texture = new Texture(p, record.data, sizeof(u_short)*2, w, h, false, false);
+                        Texture* texture = new Texture(p, record.data, sizeof(unsigned short)*2, w, h, false, false);
 
                         if(texture != nullptr)
                         {
@@ -280,13 +281,13 @@ int AssetManager::loadFromFile(const std::string *path)
 
                     }
                 }
-                else if (record.metaf == 0)// && (record.metaa == record.metab == (u_short)65535)) // brush
+                else if (record.metaf == 0)// && (record.metaa == record.metab == (unsigned short)65535)) // brush
                 {
                     std::string namestr = std::string(record.title);
-                    u_char r = 0;
-                    u_char g = 0;
-                    u_char b = 0;
-                    u_short off = 16;
+                    unsigned char r = 0;
+                    unsigned char g = 0;
+                    unsigned char b = 0;
+                    unsigned short off = 16;
 
                     if(std::regex_match(namestr, pen))
                     {
@@ -295,7 +296,7 @@ int AssetManager::loadFromFile(const std::string *path)
 
                     currentPalette->colorAt(record.metac + off, &r, &g, &b);
 
-                    Brush *brush = new Brush(r, g, b, (u_char)255);
+                    Brush *brush = new Brush(r, g, b, (unsigned char)255);
                     brushes.emplace(namestr, brush);
                 }
 
@@ -437,10 +438,10 @@ Material* AssetManager::findMaterial(std::string* key)
                 // if the name matches PEN_# then we know the offset
                 // otherwise, just make it transparent
 
-                u_char r = 0;
-                u_char g = 0;
-                u_char b = 0;
-                u_char a = 0;
+                unsigned char r = 0;
+                unsigned char g = 0;
+                unsigned char b = 0;
+                unsigned char a = 0;
 
 
                 if(std::regex_match(*key, pen))
@@ -455,7 +456,7 @@ Material* AssetManager::findMaterial(std::string* key)
                     pal_idx = strndup(idx, pal_idx - idx);
 
                     std::string name = std::string(pal_idx);
-                    u_char pindx = (u_char)std::stoi(name);
+                    unsigned char pindx = (unsigned char)std::stoi(name);
 
                     currentPalette->colorAt(pindx, &r, &g, &b);
 

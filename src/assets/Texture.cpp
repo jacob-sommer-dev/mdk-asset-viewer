@@ -16,7 +16,7 @@ Texture::Texture(const void* palette, const void* data, int start, unsigned shor
 	int len = w * h;
 	int dlen = len * 4;
 	int didx;
-	unsigned char data2[dlen]{0};
+	char* data2 = (char*)malloc(sizeof(char) * dlen);//[dlen]{0};
 
 	for(int i = 0; i < len; i++)
 	{
@@ -65,6 +65,8 @@ Texture::Texture(const void* palette, const void* data, int start, unsigned shor
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
+	free(data2);
+
 }
 
 Texture::~Texture()
@@ -102,7 +104,7 @@ Texture::~Texture()
 
 // 		unsigned char pd = *((unsigned char*)data + sizeof(char) * idx);
 
-// 		// if(pd > ((u_char)15))
+// 		// if(pd > ((unsigned char)15))
 // 		// {
 // 		// 	stride = 4;
 // 		// }

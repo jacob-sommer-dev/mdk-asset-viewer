@@ -3,7 +3,7 @@
 #include "Texture.hpp"
 #include "Brush.hpp"
 
-Mesh::Mesh(void* data, u_int* idx, u_int numMats, GLuint shader, bool single)
+Mesh::Mesh(void* data, unsigned int* idx, unsigned int numMats, GLuint shader, bool single)
 {
     this->shader = shader;
 
@@ -55,16 +55,16 @@ Mesh::Mesh(void* data, u_int* idx, u_int numMats, GLuint shader, bool single)
     for(int i = 0; i < num_tris; i++)
     {
         // the vertex indices
-        elements[i].v1 = *(u_short*)((char*)data+*idx);
-        elements[i].v2 = *(u_short*)((char*)data+*idx + sizeof(u_short));
-        elements[i].v3 = *(u_short*)((char*)data+*idx + sizeof(u_short)*2);
+        elements[i].v1 = *(unsigned short*)((char*)data+*idx);
+        elements[i].v2 = *(unsigned short*)((char*)data+*idx + sizeof(unsigned short));
+        elements[i].v3 = *(unsigned short*)((char*)data+*idx + sizeof(unsigned short)*2);
         
         // increment index
-        *idx += sizeof(u_short) * 3;
+        *idx += sizeof(unsigned short) * 3;
 
         // the material index
-        elements[i].mat_idx = *(u_short*)((char*)data+*idx);
-        *idx += sizeof(u_short);
+        elements[i].mat_idx = *(unsigned short*)((char*)data+*idx);
+        *idx += sizeof(unsigned short);
 
         // absolute u,v coords. Need to fix them to be 0.0-1.0 if the material is a texture
         elements[i].v1u = *((float*)((char*)data+*idx));
@@ -139,9 +139,9 @@ void Mesh::load(std::vector<Material*>* mats)
         glGenBuffers(num_mats, EBOs);
         ebo_sizes = (std::size_t*)malloc(sizeof(std::size_t) * numBufs);
 
-        std::vector<u_short> vtx_idx_s;
+        std::vector<unsigned short> vtx_idx_s;
 
-        for(u_short i = 0; i < num_mats; i++)
+        for(unsigned short i = 0; i < num_mats; i++)
         {
             Material* mat = (*mats)[i];
             

@@ -8,6 +8,6 @@ typedef enum {
     OpenGL45
 } RENDERERS;
 
-RenderContext* getRenderContext(u_int, u_int, RENDERERS);
+RenderContext* getRenderContext(unsigned int, unsigned int, RENDERERS);
 
 #endif //__RENDERCONTEXTFACTORY_H__

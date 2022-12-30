@@ -1,6 +1,6 @@
 #include "mdk_lbb.hpp"
 
-Texture* loadlbb(const std::string *filepath, u_short *w, u_short *h)
+Texture* loadlbb(const std::string *filepath, unsigned short *w, unsigned short *h)
 {
 
     SDL_RWops *srw = SDL_RWFromFile((*filepath).c_str(), "rb");

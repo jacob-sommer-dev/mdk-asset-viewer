@@ -14,7 +14,7 @@ private:
 
 
 public:
-    Widget(GLuint, u_short, u_short, const u_int *, const u_int *, GLuint);
+    Widget(GLuint, unsigned short, unsigned short, const unsigned int *, const unsigned int *, GLuint);
     ~Widget();
 
     // Renderable

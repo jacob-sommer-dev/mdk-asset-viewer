@@ -23,15 +23,15 @@ private:
     glm::mat4 projMat = glm::mat4(1.0f);
     glm::mat4 viewMat = glm::mat4(1.0f);
 
-    u_int disp_w;
-    u_int disp_h;
+    unsigned int disp_w;
+    unsigned int disp_h;
 
     SDL_GLContext glcontext = NULL;
 
     ~RenderContext_OpenGL();
 
 public:
-    RenderContext_OpenGL(u_int, u_int);
+    RenderContext_OpenGL(unsigned int, unsigned int);
     
     void render() override;
 

@@ -7,7 +7,7 @@
 #include <SDL2/SDL.h>
 #include "Texture.hpp"
 
-Texture* loadlbb(const std::string*, u_short*, u_short*);
+Texture* loadlbb(const std::string*, unsigned short*, unsigned short*);
 
 
 #endif // __MDK_LBB_H__

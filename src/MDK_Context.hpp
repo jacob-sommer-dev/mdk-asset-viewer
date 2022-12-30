@@ -21,10 +21,10 @@ private:
 
     MouseState mouse;
 
-    u_int disp_w;
-    u_int disp_h;
-    u_int disp_half_w;
-    u_int disp_half_h;
+    unsigned int disp_w;
+    unsigned int disp_h;
+    unsigned int disp_half_w;
+    unsigned int disp_half_h;
 
     float m_sensitivity = 0.5f;
 
@@ -55,11 +55,11 @@ public:
 
     AssetManager *assets;
 
-    int Init(float fov, u_int disp_w, u_int disp_h);
+    int Init(float fov, unsigned int disp_w, unsigned int disp_h);
     int Deinit();
 
-    int setDisplayDimens(u_int disp_w, u_int disp_h);
-    void getDisplayDimens(u_int *disp_w, u_int *disp_h);
+    int setDisplayDimens(unsigned int disp_w, unsigned int disp_h);
+    void getDisplayDimens(unsigned int *disp_w, unsigned int *disp_h);
     int setvFoV(float fov);
 
     void handleSDLKeyEvent(SDL_Event *event);

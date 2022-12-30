@@ -4,7 +4,7 @@ int parsemti(const char *filename, MTI *mti)
 {
     FILE *mtifile;
 
-    if((mtifile = fopen(filename, "r")) == NULL)
+    if((mtifile = fopen(filename, "rb")) == NULL)
     {
         printf("mdk_mti: can't open %s\n", filename);
         return -1;
@@ -21,14 +21,14 @@ int parsemti(const char *filename, MTI *mti)
         size_t read;
 
         // read len of file
-        read = fread(&(mti->header->length), __SIZEOF_INT__, 1, mtifile);
+        read = fread(&(mti->header->length), sizeof(int), 1, mtifile);
         if(read != 1)
         {
             printf("mdk_mti: Couldn't read header: length\n");
             return -1;
         }
         // set offset, record data is offset from this
-        foff = __SIZEOF_INT__;
+        foff = sizeof(int);
         
         // read file name
         read = fread(mti->header->title, sizeof(char), 12, mtifile);
@@ -40,7 +40,7 @@ int parsemti(const char *filename, MTI *mti)
         mti->header->title[12] = '\0';
 
         // read data len
-        read = fread(&(mti->header->foot_off), __SIZEOF_INT__, 1, mtifile);
+        read = fread(&(mti->header->foot_off), sizeof(int), 1, mtifile);
         if(read != 1)
         {
             printf("mdk_mti: Couldn't read header: foot_off\n");
@@ -48,7 +48,7 @@ int parsemti(const char *filename, MTI *mti)
         }
 
         // read the number of record entries
-        read = fread(&(mti->header->num_entries), __SIZEOF_INT__, 1, mtifile);
+        read = fread(&(mti->header->num_entries), sizeof(int), 1, mtifile);
         if(read != 1)
         {
             printf("mdk_mti: Couldn't read header: number of entries\n");
@@ -111,7 +111,7 @@ int parsemti(const char *filename, MTI *mti)
             }
 
             // -- offset --
-            read = fread(&(record->offset), __SIZEOF_INT__, 1, mtifile);
+            read = fread(&(record->offset), sizeof(int), 1, mtifile);
             if(read != 1)
             {
                 printf("mdk_mti: Couldn't read record header %d of %d: offset\n", i, mti->header->num_entries);

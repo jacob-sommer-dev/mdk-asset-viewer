@@ -24,10 +24,10 @@ struct Vertex {
 };
 
 struct Element {
-    u_short v1;
-    u_short v2;
-    u_short v3;
-    u_short mat_idx;
+    unsigned short v1;
+    unsigned short v2;
+    unsigned short v3;
+    unsigned short mat_idx;
     float v1u;
     float v1v;
     float v2u;
@@ -49,10 +49,10 @@ private:
     
     glm::vec3 origin;
 
-    u_int num_verts = 0;
+    unsigned int num_verts = 0;
     Vertex* vertices = nullptr;
 
-    u_int num_tris = 0;
+    unsigned int num_tris = 0;
     Element* elements = nullptr;
 
     Bounds bounds;
@@ -68,7 +68,7 @@ private:
     bool ready = false;
 
 public:
-    Mesh(void* data, u_int* start, u_int numMats, GLuint shader, bool single);
+    Mesh(void* data, unsigned int* start, unsigned int numMats, GLuint shader, bool single);
     ~Mesh();
 
     void load(std::vector<Material*>*);
