@@ -14,7 +14,6 @@ Place the compiled executable in MDK's root directory (alongside MDK's executabl
 - SDL2 and modern OpenGL renderer
 - Dear ImGUI integration
 
-Currently Linux-only, Windows compatibility is planned.
 
 ### Current State
 ![Current State](current_state.png)
